@@ -1,0 +1,500 @@
+/* ============================================
+   LA BARAQUE DES HORREURS - NIVEAU 1
+   Styles du carnet de Kursty
+   ============================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    background: radial-gradient(ellipse at 50% 20%, #2a1f1a 0%, #0b0807 70%);
+    color: #e8dccb;
+    min-height: 100vh;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* ---------- Avertissement 18+ ---------- */
+
+.gate {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+}
+
+.gate-box {
+    max-width: 520px;
+    background: #140e0b;
+    border: 2px solid #7a1f1f;
+    border-radius: 10px;
+    padding: 28px 22px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(122, 31, 31, 0.4);
+}
+
+.gate-box h1 {
+    font-size: clamp(18px, 4vw, 24px);
+    color: #ff3b1f;
+    letter-spacing: 2px;
+    margin: 0 0 14px 0;
+}
+
+.gate-box p {
+    color: #bfb2a0;
+    line-height: 1.5;
+    font-size: 15px;
+}
+
+.gate-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.leave-msg {
+    margin-top: 16px;
+    color: #ff3b1f;
+    font-weight: bold;
+}
+
+/* ---------- Boutons ---------- */
+
+.btn {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 15px;
+    font-weight: bold;
+    color: #e8dccb;
+    background: #1d1512;
+    border: 2px solid #6b4a2a;
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+    background: #2c1f18;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.btn-primary {
+    border-color: #ff3b1f;
+    color: #ffd7c9;
+}
+
+.btn-small {
+    font-size: 13px;
+    padding: 6px 10px;
+}
+
+/* ---------- Structure ---------- */
+
+.game {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 14px 40px 14px;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.game-title-image {
+    display: block;
+    width: min(100%, 760px);
+    height: auto;
+    margin: 0 auto 14px;
+    border: 2px solid #6b4a2a;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65);
+}
+
+.game-title {
+    font-size: clamp(20px, 4.5vw, 30px);
+    letter-spacing: 3px;
+    color: #ff3b1f;
+    margin: 0 0 6px 0;
+    text-shadow: 0 0 14px rgba(255, 59, 31, 0.35), 0 2px 8px #000;
+}
+
+.game-sub {
+    margin: 0 0 12px 0;
+    color: #8f8270;
+    font-size: 14px;
+}
+
+.mission {
+    background: #15100d;
+    border: 2px solid #5a1a1a;
+    border-radius: 10px;
+    padding: 18px 16px;
+    margin-bottom: 18px;
+    line-height: 1.55;
+}
+
+.mission h2 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #ff9a2e;
+    letter-spacing: 2px;
+}
+
+.mission ol {
+    padding-left: 20px;
+    margin: 10px 0;
+}
+
+.step {
+    margin-bottom: 26px;
+}
+
+.step-title {
+    font-size: clamp(16px, 3.6vw, 20px);
+    color: #ff9a2e;
+    letter-spacing: 2px;
+    margin: 0 0 8px 0;
+}
+
+.step-text {
+    color: #bfb2a0;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 14px 0;
+}
+
+.status {
+    min-height: 24px;
+    text-align: center;
+    font-weight: bold;
+    color: #ffcc66;
+    margin: 0 0 14px 0;
+}
+
+.status.is-error {
+    color: #ff3b1f;
+}
+
+.status.is-success {
+    color: #00ff00;
+}
+
+.counter {
+    text-align: center;
+    color: #8f8270;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+.actions {
+    text-align: center;
+    margin-top: 16px;
+}
+
+/* ---------- Grille de photos ---------- */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.card {
+    position: relative;
+    background: #efe6d4;
+    border: 8px solid #efe6d4;
+    border-bottom-width: 26px;
+    border-radius: 3px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+    transform: translateY(var(--drift, 0px)) rotate(var(--tilt, 0deg));
+    transition: box-shadow 0.15s ease, outline-color 0.15s ease;
+    outline: 3px solid transparent;
+    overflow: visible;
+    min-width: 0;
+}
+
+.card:nth-child(odd) {
+    --tilt: -1.2deg;
+}
+
+.card:nth-child(even) {
+    --tilt: 1deg;
+}
+
+.card:nth-child(1) { --tilt: -1.8deg; --drift: 5px; }
+.card:nth-child(2) { --tilt: 1.4deg; --drift: -3px; }
+.card:nth-child(3) { --tilt: -0.7deg; --drift: 7px; }
+.card:nth-child(4) { --tilt: 2deg; --drift: -2px; }
+.card:nth-child(5) { --tilt: 0.9deg; --drift: -5px; }
+.card:nth-child(6) { --tilt: -2.1deg; --drift: 4px; }
+.card:nth-child(7) { --tilt: 1.7deg; --drift: -1px; }
+.card:nth-child(8) { --tilt: -1.3deg; --drift: 6px; }
+
+.card.is-picked {
+    outline-color: #ff9a2e;
+    box-shadow: 0 0 0 2px #ff9a2e, 0 6px 12px rgba(0, 0, 0, 0.7);
+}
+
+.card.is-static {
+    cursor: default;
+}
+
+.card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    filter: sepia(0.35) contrast(1.05);
+}
+
+.card .card-time {
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    bottom: -20px;
+    text-align: center;
+    color: #3a2a1a;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.card .card-annot {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 8%;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(11px, 2.2vw, 14px);
+    color: #2a1a10;
+    text-align: center;
+    line-height: 1.3;
+    padding: 4px 6px;
+    background: rgba(239, 230, 212, 0.85);
+    transform: rotate(-2deg);
+}
+
+.card .card-letter {
+    position: absolute;
+    z-index: 3;
+    left: 50%;
+    top: 72%;
+    transform: translate(-50%, -50%);
+    display: grid;
+    min-width: 48px;
+    height: 52px;
+    place-items: center;
+    background: #efe6d4;
+    border: 2px solid #1a0c08;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+    font-size: 40px;
+    font-weight: bold;
+    color: #1a0c08;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.card.is-revealed .card-letter {
+    opacity: 1;
+}
+
+.card canvas.rature {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: crosshair;
+    z-index: 2;
+}
+
+.card.is-revealed canvas.rature {
+    display: none;
+}
+
+/* Grille d'étape 1 : les photos ne doivent pas déborder */
+#gridAll .card img {
+    aspect-ratio: 4 / 3;
+}
+
+/* ---------- Tuiles (lettres à ranger) ---------- */
+
+.tiles {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.tile {
+    width: 68px;
+    height: 82px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    color: #1a0c08;
+    background: linear-gradient(160deg, #efe6d4, #c9b98f);
+    border: 2px solid #5a4a2a;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 5px 9px rgba(0, 0, 0, 0.7);
+    transform: translateY(var(--drift, 0px)) rotate(var(--tilt, 0deg));
+}
+
+.tile-letter {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.tile-time {
+    font-size: 11px;
+    line-height: 1;
+    font-weight: normal;
+}
+
+.tile:nth-child(1) { --tilt: -2deg; --drift: 4px; }
+.tile:nth-child(2) { --tilt: 1.5deg; --drift: -3px; }
+.tile:nth-child(3) { --tilt: -1deg; --drift: 5px; }
+.tile:nth-child(4) { --tilt: 2.2deg; --drift: -2px; }
+.tile:nth-child(5) { --tilt: -1.4deg; --drift: 3px; }
+}
+
+.tile:disabled {
+    cursor: default;
+}
+
+.tile.is-ok {
+    background: linear-gradient(160deg, #b8f5b8, #3a8a3a);
+    border-color: #00ff00;
+}
+
+.tile.is-ko {
+    background: linear-gradient(160deg, #f5b8b8, #8a2a2a);
+    border-color: #ff3b1f;
+}
+
+/* ---------- Saisie du mot ---------- */
+
+.word-form {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.word-input {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #e8dccb;
+    background: #0a0706;
+    border: 2px solid #6b4a2a;
+    border-radius: 6px;
+    padding: 10px 12px;
+    width: min(100%, 300px);
+    outline: none;
+}
+
+.word-input:focus {
+    border-color: #ff9a2e;
+}
+
+.feedback {
+    min-height: 22px;
+    text-align: center;
+    font-weight: bold;
+    color: #ffcc66;
+    margin-top: 12px;
+}
+
+.feedback.is-error {
+    color: #ff3b1f;
+}
+
+/* ---------- Réussite : page du carnet ---------- */
+
+.reveal {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.page {
+    max-width: 560px;
+    margin: 0 auto 14px auto;
+    background: linear-gradient(170deg, #efe6d4, #d6c7a6);
+    color: #2a1a10;
+    padding: 34px 24px;
+    border-radius: 3px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.8);
+    transform: rotate(-1deg);
+    animation: pageOpen 0.8s ease-out;
+}
+
+.page-text {
+    margin: 0;
+    font-size: clamp(16px, 3.6vw, 20px);
+    line-height: 1.5;
+    font-style: italic;
+}
+
+@keyframes pageOpen {
+    from {
+        opacity: 0;
+        transform: rotate(-6deg) scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: rotate(-1deg) scale(1);
+    }
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 720px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .card {
+        border-width: 6px;
+        border-bottom-width: 22px;
+    }
+
+    .card .card-letter {
+        font-size: 30px;
+    }
+
+    .tile {
+        width: 56px;
+        height: 68px;
+    }
+
+    .tile-letter {
+        font-size: 25px;
+    }
+}

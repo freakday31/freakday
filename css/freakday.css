@@ -1,0 +1,462 @@
+/* ==========================================================
+   FREAK DAY — style commun
+   Préfixe fd- : aucune règle ne cible les éléments sans cette classe.
+   Ne jamais ajouter fd-frame au décor de l'interlude.
+   ========================================================== */
+
+:root {
+    --fd-dark: #120402;
+    --fd-brown: #2a0e06;
+    --fd-red: #e8261c;
+    --fd-red-deep: #5a0e08;
+    --fd-orange: #ff7a1a;
+    --fd-yellow: #ffd23f;
+    --fd-cream: #fff3c4;
+}
+
+/* ---------- Grain et vignettage (overlay discret, ne bloque pas les clics) ---------- */
+
+body.fd-page::before {
+    content: '';
+    position: fixed;
+    inset: -50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.07;
+    background-image:
+        repeating-radial-gradient(circle at 30% 40%, #fff 0 1px, transparent 1px 3px),
+        repeating-radial-gradient(circle at 70% 60%, #000 0 1px, transparent 1px 4px);
+    animation: fd-grain 0.6s steps(4) infinite;
+}
+
+body.fd-page::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.75) 100%);
+}
+
+@keyframes fd-grain {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-2%, 1%); }
+    50%  { transform: translate(1%, -2%); }
+    75%  { transform: translate(-1%, 2%); }
+    100% { transform: translate(0, 0); }
+}
+
+/* ---------- Cadre commun à ampoules ---------- */
+
+.fd-frame {
+    position: relative;
+    border: 4px solid var(--fd-red);
+    border-radius: 14px;
+    background: rgba(18, 4, 2, 0.88);
+    box-shadow:
+        0 0 0 3px #000,
+        0 0 0 6px var(--fd-red-deep),
+        0 0 34px rgba(255, 122, 26, 0.35);
+    z-index: 1;
+}
+
+/* Rangée d'ampoules : une bordure en pointillés jaunes qui vacille */
+.fd-frame::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border: 5px dotted var(--fd-yellow);
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: -1;
+    animation: fd-bulbs 3.8s steps(1) infinite;
+}
+
+/* Lueur d'ampoule qui dérive lentement autour du cadre */
+.fd-frame::after {
+    content: '';
+    position: absolute;
+    inset: -30px;
+    border-radius: 30px;
+    pointer-events: none;
+    z-index: -2;
+    background: radial-gradient(ellipse at 50% 50%, rgba(255, 210, 63, 0.18), transparent 70%);
+    animation: fd-halo 11s ease-in-out infinite alternate;
+}
+
+@keyframes fd-bulbs {
+    0%   { opacity: 1; }
+    23%  { opacity: 0.55; }
+    31%  { opacity: 1; }
+    64%  { opacity: 0.8; }
+    71%  { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+@keyframes fd-halo {
+    from { transform: translateX(-14px); }
+    to   { transform: translateX(14px); }
+}
+
+/* ---------- Titres en affiche de cirque ---------- */
+
+.fd-title {
+    font-family: 'Ultra', 'Rye', Georgia, serif;
+    font-weight: normal;
+    color: var(--fd-yellow);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow:
+        4px 4px 0 var(--fd-red),
+        6px 6px 0 #000,
+        0 0 18px rgba(255, 122, 26, 0.6);
+    animation: fd-tremble 9s steps(1) infinite;
+}
+
+/* Tremblement : décalage de 1 ou 2 px, rare et irrégulier */
+@keyframes fd-tremble {
+    0%, 100% { transform: translate(0, 0); }
+    41%      { transform: translate(-1px, 0); }
+    42%      { transform: translate(1px, -1px); }
+    43%      { transform: translate(0, 0); }
+    78%      { transform: translate(1px, 0); }
+    79%      { transform: translate(0, 0); }
+}
+
+/* ---------- Boutons à relief ---------- */
+
+.fd-btn {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--fd-cream);
+    background: linear-gradient(180deg, var(--fd-red), #a51a12);
+    border: 2px solid var(--fd-yellow);
+    border-radius: 8px;
+    padding: 12px 22px;
+    box-shadow: 0 6px 0 var(--fd-red-deep), 0 0 16px rgba(232, 38, 28, 0.5);
+    cursor: pointer;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.fd-btn:hover:not(:disabled) {
+    background: var(--fd-yellow);
+    color: var(--fd-dark);
+    box-shadow: 0 6px 0 #b08a10, 0 0 22px rgba(255, 210, 63, 0.7);
+}
+
+.fd-btn:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 var(--fd-red-deep);
+}
+
+.fd-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+/* Variante secondaire : bouton sombre à bordure orange */
+.fd-btn-ghost {
+    background: var(--fd-brown);
+    color: var(--fd-yellow);
+    border-color: var(--fd-orange);
+    box-shadow: 0 6px 0 #000;
+}
+
+/* ---------- Instabilité lumineuse (une seule à la fois, très espacée) ---------- */
+
+/* Scintillement d'un élément ponctuel */
+.fd-flicker {
+    animation: fd-flicker 4.7s steps(1) infinite;
+}
+
+@keyframes fd-flicker {
+    0%, 86%, 100% { opacity: 1; }
+    87%           { opacity: 0.35; }
+    88%           { opacity: 1; }
+    91%           { opacity: 0.6; }
+    92%           { opacity: 1; }
+}
+
+/* Flash bref et rare sur tout le cadre : une fois toutes les 28 s, moins de 0,3 s */
+.fd-flash::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: var(--fd-cream);
+    opacity: 0;
+    z-index: 2;
+    animation: fd-flash 28s steps(1) infinite;
+}
+
+@keyframes fd-flash {
+    0%, 96%, 100% { opacity: 0; }
+    96.5%         { opacity: 0.22; }
+    97%           { opacity: 0; }
+}
+
+/* ---------- Mode sans flashs : tout est figé ---------- */
+
+html.fd-calm body.fd-page::before,
+html.fd-calm .fd-frame::before,
+html.fd-calm .fd-frame::after,
+html.fd-calm .fd-title,
+html.fd-calm .fd-flicker,
+html.fd-calm .fd-flash::before {
+    animation: none !important;
+}
+
+html.fd-calm .fd-flash::before {
+    display: none;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 480px) {
+    .fd-title {
+        letter-spacing: 1px;
+    }
+
+    .fd-btn {
+        font-size: 14px;
+        padding: 10px 16px;
+    }
+}
+
+/* Réduction des mouvements si l'utilisateur le demande dans son système */
+@media (prefers-reduced-motion: reduce) {
+    body.fd-page::before,
+    .fd-frame::before,
+    .fd-frame::after,
+    .fd-title,
+    .fd-flicker,
+    .fd-flash::before {
+        animation: none !important;
+    }
+}
+
+/* Fond fixe : l'image reste en place pendant le défilement */
+.fd-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--fd-dark);
+    background-image: url('../images%20glitch/hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+body.fd-manege .fd-bg {
+    background-image: url('../images/carrouselfond.jpg');
+}
+
+body.fd-manege #puzzle {
+    background: transparent;
+}
+
+/* Le body ne doit pas peindre son propre fond par-dessus */
+body.fd-page,
+body.fd-bg-only {
+    background: transparent !important;
+    min-height: 100vh;
+    margin: 0;
+}
+
+body.fd-home #landing {
+    background: none;
+}
+
+body.fd-home #map,
+body.fd-foire #map {
+    background-color: var(--fd-dark);
+    background-image:
+        linear-gradient(rgba(18, 4, 2, 0.22), rgba(18, 4, 2, 0.48)),
+        url('../images/carte.jpg');
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+body.fd-home #map .attraction-card,
+body.fd-foire #map .attraction-card {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+body.fd-home #map .attraction-card-info {
+    background: linear-gradient(to bottom, rgba(18, 4, 2, 0.82), rgba(18, 4, 2, 0.96));
+}
+
+body.fd-home #map .attraction-card h2 {
+    color: #fff3c4;
+    font-family: 'Ultra', serif;
+    text-shadow: 3px 3px 0 #5a0e08, 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 480px) {
+    body.fd-home #map .attraction-card h2 {
+        font-size: 1.45em;
+    }
+}
+
+/* La couleur de la page doit être sombre, pas blanche par défaut */
+html {
+    background-color: var(--fd-dark) !important;
+    min-height: 100%;
+}
+
+body.fd-page {
+    background: transparent !important;
+    min-height: 100vh;
+}
+
+#final-game.fd-frame {
+    background: rgba(18, 4, 2, 0.76);
+}
+
+/* Centrage des écrans d'accueil, de carte et d'énigme */
+body.fd-home > .page,
+body.fd-foire > .page {
+    width: 100%;
+}
+
+body.fd-home #landing,
+body.fd-foire #landing {
+    align-items: center;
+    justify-content: center;
+}
+
+body.fd-home #map,
+body.fd-home #puzzle,
+body.fd-foire #map,
+body.fd-foire #puzzle {
+    align-items: center;
+    justify-content: safe center;
+}
+
+body.fd-home .attractions-grid,
+body.fd-foire .attractions-grid {
+    width: min(100%, 1200px);
+    margin-inline: auto;
+}
+
+body.fd-home #puzzleContent,
+body.fd-foire #puzzleContent {
+    width: min(100%, 700px);
+    margin-inline: auto;
+}
+
+/* Les contenus courts sont centrés ; les contenus longs restent défilables depuis le haut */
+body.fd-page > .page-shell,
+body.fd-page > main.game,
+body.fd-bg-only > main.game {
+    display: flex;
+    flex-direction: column;
+    justify-content: safe center;
+}
+
+body.fd-page > .page-shell {
+    min-height: 100vh;
+}
+
+body.fd-page > main.game,
+body.fd-bg-only > main.game {
+    flex: 0 0 auto;
+}
+
+body.fd-page > main.game > *,
+body.fd-bg-only > main.game > * {
+    flex: 0 0 auto;
+}
+
+#final-game.fd-frame {
+    display: flex;
+    flex-direction: column;
+    justify-content: safe center;
+    width: min(100%, 1100px);
+    margin-inline: auto;
+}
+
+#final-game .wrap {
+    width: 100%;
+}
+
+/* ===== LOGO FREAK DAY — version finale ===== */
+
+/* Zone du logo : centrage et respiration autour */
+.fd-logo-zone {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 24px;
+}
+
+/* Logo : les ombres et la lueur sont déjà dans le PNG, donc aucun filtre ici */
+.fd-logo {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: min(70vw, 680px);
+    height: auto;
+    margin: 0 auto;
+    animation: fd-logo-shake 11s steps(1) infinite;
+}
+
+@keyframes fd-logo-shake {
+    0%, 92%, 100% { transform: translate(0, 0); }
+    93%           { transform: translate(-1px, 0); }
+    94%           { transform: translate(1px, 0); }
+    95%           { transform: translate(0, 0); }
+}
+
+@media (max-width: 480px) {
+    .fd-logo {
+        width: 90vw;
+    }
+}
+
+/* Apparition progressive : uniquement sur l'accueil (classe fd-logo-intro) */
+.fd-logo-intro {
+    animation: fd-reveal 2.4s ease-out both, fd-logo-shake 11s steps(1) infinite;
+}
+
+@keyframes fd-reveal {
+    from {
+        clip-path: inset(0 100% 0 0);
+        opacity: 0.4;
+    }
+    to {
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+    }
+}
+
+/* Mode sans flashs et préférence « réduire les mouvements » : logo affiché d'emblée */
+html.fd-calm .fd-logo-intro {
+    animation: none;
+    clip-path: none;
+    opacity: 1;
+}
+
+html.fd-calm .fd-logo,
+html.fd-calm .fd-logo-zone {
+    animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fd-logo {
+        animation: none;
+    }
+
+    .fd-logo-intro {
+        animation: none;
+        clip-path: none;
+        opacity: 1;
+    }
+}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Baraque des Horreurs - Interlude : Les cibles du signal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Ultra&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/interlude.css">
+    <link rel="stylesheet" href="../logo.css">
+    <link rel="stylesheet" href="../css/freakday.css">
+    <script src="../typing-sound.js" defer></script>
+</head>
+<body class="fd-bg-only">
+    <div class="fd-bg" aria-hidden="true"></div>
+
+    <!-- AVERTISSEMENT FLASHS ET PHOTOSENSIBILITÉ -->
+    <div id="gate" class="gate">
+        <div class="gate-box">
+            <div class="fd-logo-zone">
+                <img class="site-logo fd-logo" src="../images/freakday-titre.png" alt="Freak Day">
+            </div>
+            <h1>ATTENTION AUX FLASHS</h1>
+            <p>
+                Cette séquence contient des FLASHS lumineux et des sons forts.
+                Déconseillée aux personnes sensibles à la lumière clignotante.
+            </p>
+            <div class="gate-actions">
+                <button type="button" class="btn btn-primary fd-btn" id="btnEnter">Continuer</button>
+                <button type="button" class="btn fd-btn" id="btnCalm">Version sans flashs</button>
+                <button type="button" class="btn fd-btn" id="btnLeave">Quitter</button>
+            </div>
+            <p id="leaveMsg" class="leave-msg" hidden>Tu peux fermer cette page.</p>
+        </div>
+    </div>
+
+    <main id="game" class="game" hidden>
+        <canvas id="rain" class="rain" aria-hidden="true"></canvas>
+
+        <div class="frame">
+            <div class="bulbs" aria-hidden="true"></div>
+
+            <header class="head">
+                <h1 class="title fd-title">FREAK SHOW</h1>
+                <p class="subtitle">Le signal te cherche. Évite les cibles avant qu'il ne te voie.</p>
+            </header>
+
+            <section class="scene" id="scene" aria-live="polite">
+                <p class="scene-text" id="sceneText"></p>
+            </section>
+
+            <section class="arena" id="arena">
+                <div class="eye-zone" id="eyeZone"></div>
+                <div class="aim-reticle" id="aimReticle" aria-hidden="true" hidden><span></span></div>
+            </section>
+
+            <section class="word-panel" aria-label="Progression des cibles">
+                <div class="word-panel-header">
+                    <p class="word-label">PROGRESSION DU SIGNAL</p>
+                    <p class="counter" id="counter" aria-live="polite"></p>
+                    <p class="miss-counter" id="missCounter">Ratés : 0 / 3</p>
+                </div>
+                <div class="progress-track" id="progressTrack" role="progressbar" aria-label="Cibles captées" aria-valuemin="0" aria-valuemax="31" aria-valuenow="0">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="word-tiles" id="wordTiles" aria-hidden="true"></div>
+                <p class="feedback" id="feedback" aria-live="polite"></p>
+            </section>
+
+        </div>
+
+        <!-- ÉCRAN DE CRI (jump scare de fin) -->
+        <div class="scream" id="scream" hidden>
+            <div class="scream-images" aria-hidden="true">
+                <img class="scream-image scream-image-one" src="../media/jumpscare1.jpg" alt="">
+                <img class="scream-image scream-image-two" src="../media/jumpscare2.jpg" alt="">
+            </div>
+        </div>
+    </main>
+
+    <script>
+        window.interludeConfig = {
+            word: 'PEUR',
+            onJumpscareStart() {
+                if (window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'baraque-interlude-jumpscare-start'
+                    }, '*');
+                }
+            },
+            onInterludeComplete(data) {
+                if (window.parent !== window && data.interlude === true && data.status === 'completed') {
+                    window.parent.postMessage({
+                        type: 'baraque-interlude-complete',
+                        status: data.status,
+                        autoAdvance: data.autoAdvance
+                    }, '*');
+                }
+            }
+        };
+    </script>
+    <script src="js/interlude.js"></script>
+</body>
+</html>

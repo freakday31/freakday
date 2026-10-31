@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Baraque des Horreurs - Niveau 1 : Le Carnet de Kursty</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Ultra&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../logo.css">
+    <link rel="stylesheet" href="../css/freakday.css">
+    <script src="../typing-sound.js" defer></script>
+</head>
+<body class="fd-page">
+    <div class="fd-bg" aria-hidden="true"></div>
+
+    <!-- AVERTISSEMENT 18+ -->
+    <div id="gate" class="gate">
+        <div class="gate-box">
+            <div class="fd-logo-zone">
+                <img class="site-logo fd-logo" src="../images/freakday-titre.png" alt="Freak Day">
+            </div>
+            <h1>CONTENU RÉSERVÉ AUX 18 ANS ET PLUS</h1>
+            <p>
+                Cette expérience contient de la violence, du gore, et une ambiance psychologique intense.
+                Tu peux quitter à tout moment.
+            </p>
+            <div class="gate-actions">
+                <button type="button" class="btn btn-primary fd-btn" id="btnEnter">J'ai 18 ans ou plus</button>
+                <button type="button" class="btn" id="btnLeave">Quitter</button>
+            </div>
+            <p id="leaveMsg" class="leave-msg" hidden>Tu peux fermer cette page.</p>
+        </div>
+    </div>
+
+    <main id="game" class="game fd-frame" hidden>
+        <header class="game-header">
+            <img class="game-title-image" src="../media/titre%205-1.jpg" alt="Le Carnet de Kursty, attraction 5-1">
+            <h1 class="game-title fd-title">LE CARNET DE KURSTY</h1>
+            <p class="game-sub">La Baraque des Horreurs — Niveau 1</p>
+            <button type="button" class="btn btn-small" id="btnMission">Revoir la mission</button>
+        </header>
+
+        <section class="mission" id="missionBox" hidden>
+            <h2>MISSION : LE CARNET DE KURSTY</h2>
+            <p>Kursty a disparu la nuit de la fête. Dans son carnet, un mot a été effacé.</p>
+            <ol>
+                <li><strong>Étape 1 :</strong> Parmi les 8 photos de visiteurs, ne garde que celles prises <strong>après 23h00</strong>.</li>
+                <li><strong>Étape 2 :</strong> Sur chacune d'elles, <strong>gratte l'annotation</strong> pour lire ce qu'il y a dessous. Une lettre est cachée sous l'encre.</li>
+                <li><strong>Étape 3 :</strong> Range les lettres <strong>dans l'ordre de l'heure des photos</strong>, de la plus ancienne à la plus récente.</li>
+            </ol>
+            <p>Le mot obtenu est le <strong>nom que Kursty a effacé</strong>. Tape-le pour continuer.</p>
+        </section>
+
+        <p class="status" id="status" aria-live="polite"></p>
+
+        <!-- ÉTAPE 1 : tri des photos -->
+        <section id="stepSelect" class="step">
+            <h2 class="step-title">Étape 1 — Trie les photos</h2>
+            <p class="step-text">Touche les photos prises après 23h00, puis valide.</p>
+            <div class="grid" id="gridAll"></div>
+            <div class="actions">
+                <button type="button" class="btn btn-primary fd-btn" id="btnCheck">Valider la sélection</button>
+            </div>
+        </section>
+
+        <!-- ÉTAPE 2 : grattage -->
+        <section id="stepScratch" class="step" hidden>
+            <h2 class="step-title">Étape 2 — Gratte les annotations</h2>
+            <p class="step-text">Gratte l'encre au doigt ou à la souris. Une lettre se cache dessous.</p>
+            <div class="grid" id="gridKept"></div>
+            <p class="counter" id="scratchCount"></p>
+        </section>
+
+        <!-- ÉTAPE 3 : rangement -->
+        <section id="stepOrder" class="step" hidden>
+            <h2 class="step-title">Étape 3 — Range les lettres</h2>
+            <p class="step-text">Touche les lettres dans l'ordre de l'heure, de la plus ancienne à la plus récente.</p>
+            <div class="tiles" id="tiles"></div>
+            <p class="counter" id="orderHint"></p>
+        </section>
+
+        <!-- ÉTAPE 4 : saisie -->
+        <section id="stepWord" class="step" hidden>
+            <h2 class="step-title">Étape 4 — Le nom effacé</h2>
+            <p class="step-text">Tape le nom que Kursty a effacé.</p>
+            <form class="word-form" id="wordForm" autocomplete="off">
+                <input class="word-input" id="wordInput" type="text" placeholder="Nom" aria-label="Nom effacé" />
+                <button type="submit" class="btn btn-primary fd-btn" id="btnWord">Valider</button>
+            </form>
+            <p class="feedback" id="wordFb" aria-live="polite"></p>
+        </section>
+
+        <!-- RÉUSSITE -->
+        <section id="reveal" class="reveal" hidden>
+            <div class="page">
+                <p class="page-text">« Il ne doit pas savoir que je le surveille. »</p>
+            </div>
+            <p class="step-text">Le niveau 2 est déverrouillé.</p>
+            <button type="button" class="btn btn-primary fd-btn" id="btnContinue">Passer au niveau suivant</button>
+        </section>
+    </main>
+
+    <script>
+        window.baraqueConfig = {
+            onLevelComplete(data) {
+                if (window.parent !== window && data.level === 1 && data.status === 'completed') {
+                    window.parent.postMessage({
+                        type: 'baraque-niveau1-complete',
+                        level: data.level,
+                        status: data.status
+                    }, '*');
+                }
+            }
+        };
+    </script>
+    <script src="js/niveau1.js"></script>
+</body>
+</html>

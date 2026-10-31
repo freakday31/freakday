@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Baraque des Horreurs - Niveau 2 : Le Contact</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Ultra&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../logo.css">
+    <link rel="stylesheet" href="../css/freakday.css">
+    <script src="../typing-sound.js" defer></script>
+</head>
+<body class="fd-page">
+    <div class="fd-bg" aria-hidden="true"></div>
+
+    <!-- AVERTISSEMENT DE CONTENU -->
+    <div id="gate" class="gate">
+        <div class="gate-box">
+            <div class="fd-logo-zone">
+                <img class="site-logo fd-logo" src="../images/freakday-titre.png" alt="Freak Day">
+            </div>
+            <h1>AVERTISSEMENT DE CONTENU</h1>
+            <p>
+                Ce niveau contient un langage grossier et une ambiance hostile.
+                Tu peux quitter à tout moment.
+            </p>
+            <div class="gate-actions">
+                <button type="button" class="btn btn-primary fd-btn" id="btnEnter">Continuer</button>
+                <button type="button" class="btn" id="btnLeave">Quitter</button>
+            </div>
+            <p id="leaveMsg" class="leave-msg" hidden>Tu peux fermer cette page.</p>
+        </div>
+    </div>
+
+    <main id="game" class="game fd-frame" hidden>
+        <header class="game-header">
+            <img class="game-title-image" src="../media/titre%205-2.jpg" alt="Le Contact, attraction 5-2">
+            <h1 class="game-title fd-title">LE CONTACT</h1>
+            <p class="game-sub">La Baraque des Horreurs — Niveau 2 — Dorian</p>
+            <button type="button" class="btn btn-small" id="btnMission">Revoir la mission</button>
+        </header>
+
+        <section class="mission" id="missionBox" hidden>
+            <h2>MISSION : LE CONTACT</h2>
+            <p>Dans le carnet de Kursty, un nom est noté : <strong>Dorian</strong>, ancien employé de la baraque.</p>
+            <p>Il répond sur la messagerie de la fête. Pose-lui les bonnes questions pour savoir ce qui s'est passé la nuit de la disparition.</p>
+            <p>Attention : il n'aime pas qu'on le manipule ni qu'on le menace. Si sa <strong>confiance</strong> tombe à zéro, il coupe la conversation.</p>
+        </section>
+
+        <div class="gauge">
+            <span class="gauge-label">Confiance de Dorian</span>
+            <div class="gauge-bar">
+                <div class="gauge-fill" id="gaugeFill"></div>
+            </div>
+        </div>
+
+        <div class="chat" id="chat" aria-live="polite"></div>
+
+        <div class="choices" id="choices"></div>
+
+        <div class="actions">
+            <button type="button" class="btn btn-primary fd-btn" id="btnReveal" hidden>Révéler le mot</button>
+            <button type="button" class="btn" id="btnRestart" hidden>Recommencer la conversation</button>
+        </div>
+
+        <section class="result" id="result" hidden>
+            <div class="word-box">
+                <p class="word-label">MOT RELEVÉ</p>
+                <p class="word" id="word">DAY</p>
+            </div>
+            <p class="step-text">Le niveau 3 est déverrouillé.</p>
+        </section>
+    </main>
+
+    <script>
+        window.baraqueConfig = {
+            onLevelComplete(data) {
+                if (window.parent !== window && data.level === 2 && data.status === 'completed') {
+                    window.parent.postMessage({
+                        type: 'baraque-niveau2-complete',
+                        level: data.level,
+                        status: data.status
+                    }, '*');
+                }
+            }
+        };
+    </script>
+    <script src="js/niveau2.js"></script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+/* ============================================
+   LA BARAQUE DES HORREURS - NIVEAU 4
+   Styles du labyrinthe des balises
+   ============================================ */
+
+.maze-head {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.maze-head .status {
+    color: #f0c27a;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-shadow: 0 0 12px rgba(240, 194, 122, 0.3);
+}
+
+.maze-counter {
+    margin: 0;
+    font-size: 13px;
+    color: #9ba7a5;
+    letter-spacing: 1px;
+}
+
+.maze-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 14px;
+}
+
+.maze {
+    display: grid;
+    grid-template-columns: repeat(13, 1fr);
+    width: 100%;
+    max-width: 620px;
+    aspect-ratio: 13 / 9;
+    background:
+        radial-gradient(ellipse at 50% 50%, rgba(208, 155, 91, 0.08), transparent 68%),
+        #080d0e;
+    border: 6px double #806343;
+    border-radius: 5px;
+    padding: 8px;
+    gap: 2px;
+    box-shadow: inset 0 0 28px #000, 0 14px 34px rgba(0, 0, 0, 0.72);
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.cell {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 1px;
+}
+
+.cell.wall {
+    background:
+        repeating-linear-gradient(0deg, transparent 0 10px, rgba(0, 0, 0, 0.42) 10px 12px),
+        repeating-linear-gradient(90deg, transparent 0 16px, rgba(0, 0, 0, 0.3) 16px 18px),
+        linear-gradient(145deg, #4b4b42, #252a28 54%, #171c1c);
+    border: 1px solid rgba(196, 171, 133, 0.12);
+    box-shadow: inset 0 1px rgba(255, 239, 207, 0.12), inset 0 -3px 5px #080b0b, 0 1px 2px #030505;
+}
+
+.cell.floor {
+    background:
+        radial-gradient(ellipse at 50% 46%, rgba(183, 140, 88, 0.12), transparent 72%),
+        repeating-linear-gradient(0deg, transparent 0 11px, rgba(0, 0, 0, 0.12) 11px 12px),
+        #111718;
+    border: 1px solid rgba(188, 163, 126, 0.07);
+}
+
+.cell.exit {
+    background: radial-gradient(ellipse, rgba(188, 57, 35, 0.24), #160e0d 72%);
+    box-shadow: inset 0 0 15px rgba(233, 83, 54, 0.34);
+    overflow: hidden;
+}
+
+.cell.exit::before {
+    content: '';
+    position: absolute;
+    inset: 12% 20% 20%;
+    border: 1px solid rgba(223, 171, 113, 0.8);
+    background: repeating-linear-gradient(90deg, transparent 0 4px, rgba(223, 171, 113, 0.48) 4px 5px);
+    box-shadow: inset 0 0 7px #080808, 0 0 8px rgba(233, 83, 54, 0.35);
+}
+
+.cell.exit::after {
+    content: 'SORTIE';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 7px;
+    font-weight: bold;
+    color: #f2b677;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 6px #e85336;
+    overflow: hidden;
+}
+
+.cell.beacon {
+    background: radial-gradient(ellipse, rgba(245, 179, 90, 0.18), #111718 72%);
+}
+
+.cell.beacon::before {
+    content: '';
+    position: absolute;
+    inset: 22%;
+    border: 1px solid #88734e;
+    border-radius: 3px;
+    background: linear-gradient(145deg, #7d6542, #30291f);
+    box-shadow: inset 0 0 5px #100e0b, 0 0 0 rgba(245, 179, 90, 0);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.cell.beacon.is-lit::before {
+    background: linear-gradient(145deg, #fff0b2, #e28d39 65%, #a74b27);
+    box-shadow: 0 0 18px 6px rgba(245, 155, 61, 0.72), inset 0 0 8px #fff0b2;
+    transform: scale(1.08);
+    animation: beaconPulse 0.9s ease-in-out infinite alternate;
+}
+
+.cell.beacon.is-done::before {
+    background: linear-gradient(145deg, #b8e0bd, #4e9b74 68%, #2b574a);
+    border-color: #a3d4ac;
+    box-shadow: 0 0 10px rgba(98, 195, 142, 0.52), inset 0 0 5px #d7f2d6;
+}
+
+.cell.player::before {
+    content: '';
+    position: absolute;
+    inset: -190%;
+    z-index: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 186, 89, 0.35), rgba(255, 152, 58, 0.14) 34%, transparent 72%);
+    pointer-events: none;
+}
+
+.cell.player::after {
+    content: '';
+    position: absolute;
+    inset: 23%;
+    border: 1px solid #fff0c4;
+    border-radius: 50% 50% 42% 42%;
+    background: radial-gradient(circle at 38% 32%, #fff9d9, #f5b650 48%, #a94c27 100%);
+    box-shadow: 0 0 10px 3px rgba(255, 183, 81, 0.72), inset 0 0 4px #fff8d0;
+    z-index: 2;
+}
+
+@keyframes beaconPulse {
+    from { filter: brightness(0.88); }
+    to { filter: brightness(1.25); }
+}
+
+/* Message quand on heurte un mur */
+.wall-msg {
+    min-height: 44px;
+    max-width: 620px;
+    margin: 0 auto 12px auto;
+    text-align: center;
+    font-style: italic;
+    color: #cfb892;
+    line-height: 1.4;
+}
+
+/* Manette */
+.dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(2, 60px);
+    gap: 8px;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+}
+
+.dpad-btn {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 22px;
+    color: #f0d6a8;
+    background: linear-gradient(145deg, #2c3634, #111718);
+    border: 2px solid #806343;
+    border-radius: 5px;
+    cursor: pointer;
+    touch-action: manipulation;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.08), 0 4px 8px rgba(0, 0, 0, 0.55);
+}
+
+.dpad-btn:active {
+    background: linear-gradient(145deg, #70472b, #2c2118);
+    border-color: #f0b763;
+    box-shadow: 0 0 14px rgba(240, 183, 99, 0.45);
+}
+
+.dpad-up {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.dpad-left {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.dpad-right {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.dpad-down {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+@media (max-width: 480px) {
+    .maze {
+        padding: 5px;
+        gap: 1px;
+    }
+
+    .cell.exit::after {
+        font-size: 5px;
+        letter-spacing: 0;
+    }
+
+    .dpad {
+        grid-template-columns: repeat(3, 72px);
+        grid-template-rows: repeat(2, 72px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cell.beacon.is-lit::before {
+        animation: none;
+    }
+}

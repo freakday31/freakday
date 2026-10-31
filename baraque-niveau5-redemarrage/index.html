@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#120402">
+    <title>La Baraque des Horreurs - Niveau 5 : Le Redémarrage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Ultra&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../logo.css">
+    <script src="../typing-sound.js" defer></script>
+    <style>
+        #final-game {
+            --fs-yellow: #ffd23f;
+            --fs-orange: #ff7a1a;
+            --fs-red: #e8261c;
+            --fs-dark: #120402;
+            --fs-cream: #fff3c4;
+            position: relative;
+            isolation: isolate;
+            box-sizing: border-box;
+            min-height: 100vh;
+            padding: 16px 16px 40px;
+            color: var(--fs-yellow);
+            background: var(--fs-dark);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #final-game .room-glow {
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #final-game .room-glow-warm {
+            background: radial-gradient(ellipse at 50% 0%, rgba(255, 210, 63, 0.34), transparent 68%);
+            opacity: 1;
+        }
+
+        #final-game .room-glow-danger {
+            background: radial-gradient(ellipse at 50% 45%, rgba(232, 38, 28, 0.4), transparent 72%);
+            opacity: 0;
+        }
+
+        #final-game *,
+        #final-game *::before,
+        #final-game *::after {
+            box-sizing: border-box;
+        }
+
+        #final-game [hidden] {
+            display: none !important;
+        }
+
+        #final-game.is-calm .scene.is-shaking {
+            animation: none;
+        }
+
+        #final-game .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        #final-game .gate {
+            position: fixed;
+            z-index: 100;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(18, 4, 2, 0.96);
+        }
+
+        #final-game .gate-box {
+            max-width: 520px;
+            padding: 28px 22px;
+            border: 3px solid var(--fs-red);
+            border-radius: 12px;
+            background: #1f0a04;
+            box-shadow: 0 0 40px rgba(232, 38, 28, 0.5);
+            text-align: center;
+        }
+
+        #final-game .gate-box h1 {
+            margin: 0 0 14px;
+            color: var(--fs-orange);
+            font-size: clamp(18px, 4vw, 24px);
+            letter-spacing: 2px;
+        }
+
+        #final-game .gate-box p {
+            color: #e9c98a;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        #final-game .gate-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        #final-game .leave-msg {
+            margin-top: 16px;
+            color: var(--fs-red);
+            font-weight: bold;
+        }
+
+        #final-game .btn {
+            padding: 10px 16px;
+            border: 2px solid var(--fs-orange);
+            border-radius: 8px;
+            color: var(--fs-yellow);
+            background: #2a0e06;
+            font: bold 15px 'Courier New', Courier, monospace;
+            cursor: pointer;
+        }
+
+        #final-game .btn:hover:not(:disabled) {
+            color: var(--fs-cream);
+            background: var(--fs-red);
+        }
+
+        #final-game .btn-primary {
+            border-color: var(--fs-yellow);
+            color: var(--fs-cream);
+            background: var(--fs-red);
+        }
+
+        #final-game .btn:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        #final-game .head {
+            margin: 10px 0 16px;
+            text-align: center;
+        }
+
+        #final-game .title {
+            margin: 0 0 6px;
+            color: var(--fs-yellow);
+            font-size: clamp(26px, 7vw, 44px);
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px var(--fs-orange), 0 0 26px var(--fs-red), 3px 3px 0 #000;
+        }
+
+        #final-game .subtitle {
+            margin: 0;
+            color: var(--fs-orange);
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        #final-game .scene {
+            display: flex;
+            min-height: 90px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            padding: 14px;
+            border: 2px solid var(--fs-orange);
+            border-radius: 10px;
+            background: #000;
+            text-align: center;
+        }
+
+        #final-game .scene-text {
+            margin: 0;
+            color: #ffe9a8;
+            font-size: clamp(15px, 3.4vw, 18px);
+            line-height: 1.6;
+        }
+
+        #final-game .scene.is-shaking {
+            animation: finalGameSceneShake 0.4s ease-in-out;
+        }
+
+        @keyframes finalGameSceneShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        #final-game .panel {
+            margin-bottom: 16px;
+            padding: 18px;
+            border: 2px solid #5a2a10;
+            border-radius: 12px;
+            background: rgba(20, 10, 4, 0.92);
+        }
+
+        #final-game .panel h2 {
+            margin: 0 0 10px;
+            color: var(--fs-orange);
+            font-size: clamp(16px, 3.6vw, 20px);
+            letter-spacing: 2px;
+        }
+
+        #final-game .panel p {
+            margin: 0 0 10px;
+            color: #e9c98a;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        #final-game .stage {
+            position: relative;
+            width: 100%;
+            height: 560px;
+            overflow: hidden;
+            border: 2px solid #5a2a10;
+            border-radius: 12px;
+            background: #000 url('../media/trace-room-background.jpg') center / cover no-repeat;
+            cursor: none;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #final-game .stage-canvas {
+            position: absolute;
+            z-index: 2;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        #final-game .noise-canvas {
+            position: absolute;
+            z-index: 3;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        #final-game .lamp-charge {
+            margin: 12px 0;
+        }
+
+        #final-game .game-timer {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 12px 0;
+            padding: 10px 12px;
+            border: 1px solid #5a2a10;
+            border-radius: 8px;
+            color: #e9c98a;
+            background: rgba(0, 0, 0, 0.55);
+            font-size: 14px;
+        }
+
+        #final-game .game-timer-value {
+            color: var(--fs-yellow);
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #final-game .game-timer.is-expired {
+            border-color: var(--fs-red);
+            color: #ffb092;
+        }
+
+        #final-game .game-timer.is-expired .game-timer-value {
+            color: var(--fs-red);
+        }
+
+        #final-game .lamp-charge-label {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 6px;
+            color: #e9c98a;
+            font-size: 13px;
+        }
+
+        #final-game .lamp-charge-track {
+            height: 12px;
+            overflow: hidden;
+            border: 1px solid #5a2a10;
+            border-radius: 8px;
+            background: #000;
+        }
+
+        #final-game .lamp-charge-fill {
+            width: 100%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--fs-red), var(--fs-orange), var(--fs-yellow));
+            transition: width 0.15s linear;
+        }
+
+        #final-game .lamp-charge.is-low .lamp-charge-fill {
+            background: var(--fs-red);
+        }
+
+        #final-game .stage.is-complete .stage-canvas {
+            display: none;
+        }
+
+        #final-game .stage.is-complete .noise-canvas {
+            display: none;
+        }
+
+        #final-game .kursty-vignette {
+            position: absolute;
+            z-index: 4;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow:
+                inset 0 0 var(--vignette-blur, 12px) var(--vignette-spread, 0px)
+                    rgba(var(--vignette-color, 255, 122, 26), var(--vignette-opacity, 0));
+            pointer-events: none;
+            transition: box-shadow 0.25s linear;
+        }
+
+        #final-game .stage.is-complete .kursty-vignette,
+        #final-game .stage.is-failed .kursty-vignette {
+            display: none;
+        }
+
+        #final-game .kursty-shadow {
+            position: absolute;
+            z-index: 1;
+            width: auto;
+            height: 150px;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            pointer-events: none;
+            transition: left 2.2s cubic-bezier(0.22, 0.61, 0.36, 1),
+                top 2.2s cubic-bezier(0.22, 0.61, 0.36, 1),
+                opacity 0.25s ease;
+        }
+
+        #final-game .kursty-shadow.is-hunting {
+            opacity: 0.92;
+        }
+
+        #final-game .stage.is-complete .trace:not(.is-found) {
+            opacity: 0 !important;
+        }
+
+        #final-game .stage.is-complete .kursty-shadow {
+            display: none;
+        }
+
+        #final-game .stage.is-complete .trace.is-found {
+            opacity: 1;
+        }
+
+        #final-game .trace {
+            position: absolute;
+            z-index: 1;
+            width: 18px;
+            height: 27px;
+            transform: translate(-50%, -50%);
+            background:
+                radial-gradient(ellipse 4px 5px at 50% 22%, var(--trace-color) 82%, transparent 100%),
+                radial-gradient(ellipse 7px 10px at 50% 68%, var(--trace-color) 84%, transparent 100%);
+            filter: blur(0.55px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2.4s linear;
+        }
+
+        #final-game .trace.is-false {
+            --trace-color: #cfc4b0;
+        }
+
+        #final-game .trace.is-real {
+            --trace-color: #a31920;
+            background:
+                radial-gradient(ellipse 2px 3px at 30% 36%, #5f080e 85%, transparent 100%),
+                radial-gradient(ellipse 3px 2px at 72% 55%, #d12c2c 78%, transparent 100%),
+                radial-gradient(ellipse 4px 5px at 50% 22%, #9e111a 82%, transparent 100%),
+                radial-gradient(ellipse 7px 10px at 50% 68%, #750b12 84%, transparent 100%);
+        }
+
+        #final-game .trace.is-found {
+            --trace-color: #c51e27;
+            opacity: 0.95;
+            filter: blur(0.35px) drop-shadow(0 0 5px rgba(190, 20, 28, 0.8));
+        }
+
+        #final-game .trace.is-expired {
+            visibility: hidden;
+            opacity: 0 !important;
+            transition: none;
+        }
+
+        #final-game .counter {
+            margin: 10px 0 0;
+            color: #b89a6a;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        #final-game .capture-progress {
+            margin: 12px 0;
+        }
+
+        #final-game .capture-progress-label {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 6px;
+            color: #e9c98a;
+            font-size: 13px;
+        }
+
+        #final-game .capture-progress-track {
+            height: 12px;
+            overflow: hidden;
+            border: 1px solid #5a2a10;
+            border-radius: 8px;
+            background: #000;
+        }
+
+        #final-game .capture-progress-fill {
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--fs-red), var(--fs-orange), var(--fs-yellow));
+            transition: width 0.12s linear;
+        }
+
+        #final-game .success {
+            position: absolute;
+            z-index: 3;
+            right: 14px;
+            bottom: 14px;
+            left: 14px;
+            padding: 16px;
+            border: 2px solid var(--fs-yellow);
+            border-radius: 10px;
+            background: rgba(31, 10, 4, 0.96);
+            text-align: center;
+        }
+
+        #final-game .success h2 {
+            color: var(--fs-yellow);
+        }
+
+        #final-game .success .btn {
+            margin-top: 8px;
+        }
+
+        #final-game .failure {
+            position: absolute;
+            z-index: 5;
+            inset: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px solid var(--fs-red);
+            border-radius: 10px;
+            background: rgba(18, 4, 2, 0.96);
+            text-align: center;
+        }
+
+        #final-game .failure h2 {
+            color: var(--fs-red);
+        }
+
+        #final-game .failure .btn {
+            margin-top: 8px;
+        }
+
+        #final-game .next-link {
+            color: var(--fs-yellow);
+        }
+
+        @media (max-width: 600px) {
+            #final-game {
+                padding: 12px 10px 28px;
+            }
+
+            #final-game .panel {
+                padding: 14px 10px;
+            }
+
+            #final-game .stage {
+                height: 460px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #final-game *,
+            #final-game *::before,
+            #final-game *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="../css/freakday.css">
+</head>
+<body class="fd-page">
+    <div class="fd-bg" aria-hidden="true"></div>
+    <main id="final-game" class="fd-frame">
+        <div class="room-glow room-glow-warm" id="roomGlowWarm" aria-hidden="true"></div>
+        <div class="room-glow room-glow-danger" id="roomGlowDanger" aria-hidden="true"></div>
+        <div class="wrap">
+            <div id="gate" class="gate">
+                <div class="gate-box">
+                    <h1>CONTENU RÉSERVÉ AUX 18 ANS ET PLUS</h1>
+                    <p>
+                        Ce niveau contient une exploration dans le noir et une ambiance oppressante.
+                        Tu peux choisir la version sans secousses ou quitter à tout moment.
+                    </p>
+                    <div class="gate-actions">
+                        <button type="button" class="btn btn-primary fd-btn" id="btnEnter">J'ai 18 ans ou plus</button>
+                        <button type="button" class="btn fd-btn" id="btnCalm">Version sans secousses</button>
+                        <button type="button" class="btn" id="btnLeave">Quitter</button>
+                    </div>
+                    <p id="leaveMsg" class="leave-msg" hidden>Tu peux fermer cette page.</p>
+                </div>
+            </div>
+
+            <header class="head">
+                <h1 class="title fd-title">LE REDÉMARRAGE</h1>
+                <p class="subtitle">La Baraque des Horreurs — Niveau 5</p>
+            </header>
+
+            <section class="scene" id="scene" aria-live="polite">
+                <p class="scene-text" id="sceneText">La baraque attend dans le noir.</p>
+            </section>
+
+            <section class="panel" id="phaseTrace">
+                <h2 id="phaseTitle">LA TRAQUE</h2>
+                <p id="phaseInstructions">
+                    Explore la salle avec ta lampe. Trouve les cinq bonnes traces parmi les fausses :
+                    les bonnes restent visibles 6 secondes après découverte. Observe attentivement la taille
+                    et le sens des empreintes. La lampe faiblit vite : secoue la souris pour la recharger.
+                </p>
+                <div class="game-timer" id="gameTimer" role="timer" aria-live="off">
+                    <span>Temps avant le redémarrage de la fête</span>
+                    <span class="game-timer-value" id="gameTimerValue">03:00</span>
+                </div>
+                <div class="lamp-charge" id="lampCharge" role="group" aria-label="Charge de la lampe">
+                    <div class="lamp-charge-label">
+                        <span>Charge de la lampe — secoue la souris pour recharger</span>
+                        <span id="lampChargeValue">100 %</span>
+                    </div>
+                    <div class="lamp-charge-track" id="lampChargeTrack" role="progressbar"
+                        aria-label="Charge de la lampe" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+                        <div class="lamp-charge-fill" id="lampChargeFill"></div>
+                    </div>
+                </div>
+                <div class="capture-progress" id="captureProgress" hidden>
+                    <div class="capture-progress-label">
+                        <span>Capture de Kursty — maintiens la lumière sur lui</span>
+                        <span id="captureProgressValue">0 %</span>
+                    </div>
+                    <div class="capture-progress-track" id="captureProgressTrack" role="progressbar"
+                        aria-label="Progression de la capture" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="capture-progress-fill" id="captureProgressFill"></div>
+                    </div>
+                    <p class="counter" id="captureCounter" aria-live="polite">Kursty n'a pas encore fui.</p>
+                </div>
+                <div class="stage" id="stage" aria-label="Salle noire à explorer avec la lampe">
+                    <canvas class="stage-canvas" id="stageCanvas" aria-hidden="true"></canvas>
+                    <canvas class="noise-canvas" id="noiseCanvas" aria-hidden="true"></canvas>
+                    <div class="kursty-vignette" id="kurstyVignette" aria-hidden="true"></div>
+                    <img class="kursty-shadow" id="kurstyShadow" src="../media/kursty-hunter.png" alt="" aria-hidden="true">
+                    <section class="success" id="traceSuccess" aria-live="polite" hidden>
+                        <h2>NIVEAU VALIDÉ</h2>
+                        <p id="successMessage">Kursty est capturé. La voie est libre.</p>
+                        <button type="button" class="btn btn-primary fd-btn" id="btnContinue">Passer au niveau suivant</button>
+                        <p id="standaloneMessage" hidden>
+                            <a class="next-link" href="../attraction-5.html">Revenir à l'attraction</a>
+                        </p>
+                    </section>
+                    <section class="failure" id="traceFailure" aria-live="assertive" hidden>
+                        <h2>LA TRAQUE EST PERDUE</h2>
+                        <p>La lumière s'éteint. Les traces se sont effacées.</p>
+                        <button type="button" class="btn btn-primary fd-btn" id="btnRetry">Recommencer la traque</button>
+                    </section>
+                </div>
+                <p class="counter" id="traceCounter" aria-live="polite">Bonnes traces trouvées : 0 / 5</p>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        window.finalConfig = {
+            onLevelComplete(data) {
+                if (window.parent !== window && data.level === 5 && data.status === 'completed') {
+                    window.parent.postMessage({
+                        type: 'baraque-niveau5-complete',
+                        level: data.level,
+                        status: data.status
+                    }, '*');
+                } else {
+                    document.getElementById('standaloneMessage').hidden = false;
+                }
+            }
+        };
+    </script>
+    <script>
+        (function () {
+            'use strict';
+
+            const GOOD_TRACES = 5;
+            const FALSE_TRACES = 15;
+            const MARKS_PER_TRACE = 3;
+            const TRACE_PICK_RADIUS = 24;
+            const LAMP_RADIUS = 80;
+            const MIN_LAMP_RADIUS = 22;
+            const CHARGE_DRAIN_PER_SECOND = 0.15;
+            const CAPTURE_CHARGE_DRAIN_PER_SECOND = 0.04;
+            const SHAKE_SPEED_THRESHOLD = 320;
+            const CHARGE_RESTORE_PER_SECOND = 0.55;
+            const CAPTURE_TIME = 8000;
+            const CAPTURE_DECAY = 0.0012;
+            const MOVE_EVERY = 2500;
+            const CAPTURE_TRIES_HINT = 5;
+            const GOOD_TRACE_VISIBLE_MS = 6000;
+            const GAME_TIME_MS = 3 * 60 * 1000;
+            const NOISE_REFRESH_MS = 100;
+            const PRESSURE_BASE_PER_SECOND = 0.018;
+            const PRESSURE_LOW_CHARGE_PER_SECOND = 0.12;
+            const PRESSURE_REDUCTION_PER_SECOND = 0.3;
+
+            class TraceGame {
+                constructor(config) {
+                    this.config = config || {};
+                    this.startTime = null;
+                    this.calm = false;
+                    this.foundCount = 0;
+                    this.traces = [];
+                    this.phase = 'trace';
+                    this.lamp = null;
+                    this.lampCharge = 1;
+                    this.shakeDistance = 0;
+                    this.previousPointer = null;
+                    this.lastFrameTime = null;
+                    this.captureProgress = 0;
+                    this.captureTries = 0;
+                    this.lastKurstyMove = 0;
+                    this.kurstyPosition = { x: 50, y: 50 };
+                    this.timedOut = false;
+                    this.lastTimerSecond = -1;
+                    this.width = 0;
+                    this.height = 0;
+                    this.dpr = 1;
+                    this.frameId = null;
+                    this.noiseTimer = null;
+                    this.completed = false;
+                    this.failed = false;
+                    this.kurstyPressure = 0;
+                    this.heartAudio = new Audio('../media/heart.mp3');
+                    this.searchAudio = new Audio('../media/respire.mp3');
+                    this.kurstyAudio = new Audio('../media/respirespeed.mp3');
+                    this.ambienceAudio = new Audio('../media/Glacial Freezing Ambience with Whispers.mp3');
+                    this.wrongAudio = new Audio('../media/wrong.mp3');
+                    this.captureSuccessAudio = new Audio('../media/yes2.mp3');
+                    this.heartAudio.loop = true;
+                    this.searchAudio.loop = true;
+                    this.kurstyAudio.loop = true;
+                    this.ambienceAudio.loop = true;
+                    this.heartAudio.volume = 0.35;
+                    this.searchAudio.volume = 0.55;
+                    this.kurstyAudio.volume = 0.55;
+                    this.ambienceAudio.volume = 0.4;
+                    this.wrongAudio.volume = 0.8;
+                    this.phaseAudio = null;
+
+                    this.el = {
+                        root: document.getElementById('final-game'),
+                        roomGlowWarm: document.getElementById('roomGlowWarm'),
+                        roomGlowDanger: document.getElementById('roomGlowDanger'),
+                        phaseTitle: document.getElementById('phaseTitle'),
+                        phaseInstructions: document.getElementById('phaseInstructions'),
+                        gameTimer: document.getElementById('gameTimer'),
+                        gameTimerValue: document.getElementById('gameTimerValue'),
+                        gate: document.getElementById('gate'),
+                        btnEnter: document.getElementById('btnEnter'),
+                        btnCalm: document.getElementById('btnCalm'),
+                        btnLeave: document.getElementById('btnLeave'),
+                        leaveMsg: document.getElementById('leaveMsg'),
+                        scene: document.getElementById('scene'),
+                        sceneText: document.getElementById('sceneText'),
+                        stage: document.getElementById('stage'),
+                        canvas: document.getElementById('stageCanvas'),
+                        noiseCanvas: document.getElementById('noiseCanvas'),
+                        kurstyVignette: document.getElementById('kurstyVignette'),
+                        kurstyShadow: document.getElementById('kurstyShadow'),
+                        lampCharge: document.getElementById('lampCharge'),
+                        lampChargeTrack: document.getElementById('lampChargeTrack'),
+                        lampChargeFill: document.getElementById('lampChargeFill'),
+                        lampChargeValue: document.getElementById('lampChargeValue'),
+                        captureProgress: document.getElementById('captureProgress'),
+                        captureProgressFill: document.getElementById('captureProgressFill'),
+                        captureProgressTrack: document.getElementById('captureProgressTrack'),
+                        captureProgressValue: document.getElementById('captureProgressValue'),
+                        captureCounter: document.getElementById('captureCounter'),
+                        counter: document.getElementById('traceCounter'),
+                        success: document.getElementById('traceSuccess'),
+                        successMessage: document.getElementById('successMessage'),
+                        failure: document.getElementById('traceFailure'),
+                        btnContinue: document.getElementById('btnContinue'),
+                        btnRetry: document.getElementById('btnRetry'),
+                        standaloneMessage: document.getElementById('standaloneMessage')
+                    };
+
+                    this.ctx = this.el.canvas.getContext('2d');
+                    this.noiseCtx = this.el.noiseCanvas.getContext('2d');
+                    this.bindEvents();
+                    this.resize();
+                    this.spawnTraces();
+                }
+
+                bindEvents() {
+                    this.el.btnEnter.addEventListener('click', () => this.enter(false));
+                    this.el.btnCalm.addEventListener('click', () => this.enter(true));
+                    this.el.btnLeave.addEventListener('click', () => {
+                        this.el.leaveMsg.hidden = false;
+                        this.el.btnEnter.disabled = true;
+                        this.el.btnCalm.disabled = true;
+                        this.el.btnLeave.disabled = true;
+                    });
+                    this.el.btnContinue.addEventListener('click', () => this.complete());
+                    this.el.btnRetry.addEventListener('click', () => this.retry());
+
+                    const moveLamp = (event) => {
+                        if (this.completed || this.failed) return;
+                        const rect = this.el.stage.getBoundingClientRect();
+                        const point = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+                        if (this.previousPointer) {
+                            this.shakeDistance += Math.hypot(
+                                point.x - this.previousPointer.x,
+                                point.y - this.previousPointer.y
+                            );
+                        }
+                        this.previousPointer = point;
+                        this.lamp = point;
+                        this.discoverTraces();
+                    };
+
+                    this.el.stage.addEventListener('pointerdown', (event) => {
+                        moveLamp(event);
+                        event.preventDefault();
+                    });
+                    this.el.stage.addEventListener('pointermove', moveLamp);
+                    this.el.stage.addEventListener('pointerleave', () => {
+                        this.lamp = null;
+                        this.previousPointer = null;
+                    });
+                    window.addEventListener('resize', () => this.resize());
+                }
+
+                enter(calm) {
+                    this.calm = calm;
+                    document.documentElement.classList.toggle('fd-calm', calm);
+                    this.el.root.classList.toggle('is-calm', calm);
+                    this.el.gate.hidden = true;
+                    this.el.sceneText.textContent = 'La fête est finie. Dans la poussière, les traces se multiplient.';
+                    this.startTime = Date.now();
+                    this.timedOut = false;
+                    this.lastKurstyMove = this.startTime;
+                    this.kurstyPosition = { x: 50, y: 50 };
+                    this.el.kurstyShadow.style.left = '50%';
+                    this.el.kurstyShadow.style.top = '50%';
+                    this.el.kurstyShadow.classList.add('is-hunting');
+                    this.startGameAudio(this.searchAudio);
+                    this.updateGameTimer();
+                    this.lastFrameTime = performance.now();
+                    this.drawNoise();
+                    this.noiseTimer = setInterval(() => this.drawNoise(), NOISE_REFRESH_MS);
+                    this.frameId = requestAnimationFrame((time) => this.draw(time));
+                }
+
+                resize() {
+                    const rect = this.el.stage.getBoundingClientRect();
+                    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+                    this.width = Math.max(1, Math.round(rect.width));
+                    this.height = Math.max(1, Math.round(rect.height));
+                    this.el.canvas.width = Math.round(this.width * this.dpr);
+                    this.el.canvas.height = Math.round(this.height * this.dpr);
+                    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+                    this.el.noiseCanvas.width = Math.max(1, Math.ceil(this.width / 3));
+                    this.el.noiseCanvas.height = Math.max(1, Math.ceil(this.height / 3));
+                    this.traces.forEach((trace) => this.positionTrace(trace));
+                    if (this.noiseTimer) this.drawNoise();
+                }
+
+                spawnTraces() {
+                    this.el.stage.querySelectorAll('.trace').forEach((mark) => mark.remove());
+                    this.traces = [];
+
+                    const total = GOOD_TRACES + FALSE_TRACES;
+                    const columns = Math.max(3, Math.min(7, Math.floor(this.width / 130)));
+                    const rows = Math.ceil(total / columns);
+                    const goodIndices = new Set();
+                    while (goodIndices.size < GOOD_TRACES) {
+                        goodIndices.add(Math.floor(Math.random() * total));
+                    }
+
+                    for (let index = 0; index < total; index++) {
+                        const column = index % columns;
+                        const row = Math.floor(index / columns);
+                        const centerX = ((column + 0.5 + (Math.random() - 0.5) * 0.2) / columns) * 100;
+                        const centerY = ((row + 0.5 + (Math.random() - 0.5) * 0.18) / rows) * 100;
+                        const trace = { isGood: goodIndices.has(index), found: false, visibleUntil: 0, marks: [] };
+
+                        for (let markIndex = 0; markIndex < MARKS_PER_TRACE; markIndex++) {
+                            const offset = markIndex - (MARKS_PER_TRACE - 1) / 2;
+                            const mark = document.createElement('span');
+                            mark.className = 'trace ' + (trace.isGood ? 'is-real' : 'is-false');
+                            mark.style.left = (centerX + offset * (100 / columns) * 0.1).toFixed(1) + '%';
+                            mark.style.top = (
+                                centerY - offset * (100 / rows) * 0.1 +
+                                (Math.random() - 0.5) * (100 / rows) * 0.04
+                            ).toFixed(1) + '%';
+                            mark.style.transform = 'translate(-50%, -50%) rotate(' +
+                                ((markIndex % 2 ? -1 : 1) * (10 + Math.random() * 18) *
+                                    (trace.isGood ? 1 : -1)).toFixed(1) + 'deg) scale(' +
+                                (trace.isGood ? '1' : '1.12') + ')';
+                            this.el.stage.appendChild(mark);
+                            trace.marks.push({ element: mark, x: 0, y: 0, visibleUntil: 0 });
+                        }
+
+                        this.positionTrace(trace);
+                        this.traces.push(trace);
+                    }
+                }
+
+                positionTrace(trace) {
+                    trace.marks.forEach((mark) => {
+                        mark.x = parseFloat(mark.element.style.left) / 100 * this.width;
+                        mark.y = parseFloat(mark.element.style.top) / 100 * this.height;
+                    });
+                }
+
+                discoverTraces() {
+                    if (this.phase !== 'trace') return;
+
+                    this.traces.forEach((trace) => {
+                        if (this.phase !== 'trace') return;
+                        if (trace.found) return;
+                        let touchedByLight = false;
+
+                        trace.marks.forEach((mark) => {
+                            const distance = this.lamp
+                                ? Math.hypot(this.lamp.x - mark.x, this.lamp.y - mark.y)
+                                : Infinity;
+                            const radius = this.currentLampRadius();
+                            if (distance < Math.min(TRACE_PICK_RADIUS, radius * 0.5)) touchedByLight = true;
+                            if (distance < radius * 0.75) {
+                                mark.visibleUntil = Date.now() + 1800;
+                                mark.element.style.opacity = '1';
+                            } else if (Date.now() > mark.visibleUntil) {
+                                mark.element.style.opacity = '0';
+                            }
+                        });
+
+                        if (touchedByLight && trace.isGood) this.discoverGoodTrace(trace);
+                    });
+                }
+
+                discoverGoodTrace(trace) {
+                    trace.found = true;
+                    trace.visibleUntil = performance.now() + GOOD_TRACE_VISIBLE_MS;
+                    trace.marks.forEach((mark) => {
+                        mark.element.classList.add('is-found');
+                        mark.element.style.opacity = '1';
+                    });
+
+                    this.foundCount++;
+                    this.el.counter.textContent = 'Bonnes traces trouvées : ' + this.foundCount + ' / ' + GOOD_TRACES;
+                    if (typeof window.playAnswerSound === 'function') window.playAnswerSound('correct');
+
+                    if (this.foundCount === GOOD_TRACES) this.startCapture();
+                    else this.el.sceneText.textContent = 'Une bonne trace révélée. Dépêche-toi, elle ne restera que 6 secondes.';
+                }
+
+                startCapture() {
+                    this.phase = 'capture';
+                    this.startPhaseAudio(this.kurstyAudio);
+                    this.captureProgress = 0;
+                    this.captureTries = 0;
+                    this.lastKurstyMove = Date.now();
+                    this.el.phaseTitle.textContent = 'CAPTURE DE KURSTY';
+                    this.el.phaseInstructions.textContent = 'Vise Kursty avec le faisceau et maintiens la lumière sur lui pendant 8 secondes. La lampe faiblit moins vite pendant la capture, mais secoue-la si la lumière devient trop faible.';
+                    this.el.sceneText.textContent = 'Il est là. Garde le faisceau sur lui jusqu’à ce que la capture soit complète.';
+                    this.el.captureProgress.hidden = false;
+                    this.el.captureCounter.textContent = 'Kursty n’a pas encore fui.';
+                    this.el.kurstyShadow.style.left = this.kurstyPosition.x + '%';
+                    this.el.kurstyShadow.style.top = this.kurstyPosition.y + '%';
+                    this.el.kurstyShadow.classList.add('is-hunting');
+                    this.traces.forEach((trace) => {
+                        if (!trace.found) {
+                            trace.marks.forEach((mark) => {
+                                mark.element.style.opacity = '0';
+                            });
+                        }
+                    });
+                }
+
+                updateGameTimer() {
+                    if (this.startTime === null) return;
+
+                    const remaining = Math.max(0, GAME_TIME_MS - (Date.now() - this.startTime));
+                    const totalSeconds = Math.ceil(remaining / 1000);
+                    if (totalSeconds !== this.lastTimerSecond) {
+                        this.lastTimerSecond = totalSeconds;
+                        this.el.gameTimerValue.textContent = totalSeconds > 0
+                            ? Math.floor(totalSeconds / 60).toString().padStart(2, '0') + ':' +
+                                (totalSeconds % 60).toString().padStart(2, '0')
+                            : 'TEMPS ÉCOULÉ';
+                    }
+
+                    if (remaining === 0 && !this.timedOut) {
+                        this.timedOut = true;
+                        this.el.gameTimer.classList.add('is-expired');
+                        this.el.sceneText.textContent = 'Le temps est écoulé. Continue la traque : Kursty peut encore être capturé.';
+                    }
+                }
+
+                updateKurstyMovement() {
+                    if (this.phase !== 'trace' || Date.now() - this.lastKurstyMove < MOVE_EVERY) return;
+
+                    this.moveKursty();
+                    this.lastKurstyMove = Date.now();
+                }
+
+                expireFoundTraces(timestamp) {
+                    this.traces.forEach((trace) => {
+                        if (!trace.found || trace.visibleUntil === 0 || timestamp < trace.visibleUntil) return;
+
+                        trace.visibleUntil = 0;
+                        trace.marks.forEach((mark) => {
+                            mark.element.classList.remove('is-found');
+                            mark.element.classList.add('is-expired');
+                            mark.element.style.opacity = '0';
+                        });
+                    });
+                }
+
+                moveKursty() {
+                    const previousPosition = this.kurstyPosition;
+                    do {
+                        this.kurstyPosition = {
+                            x: 18 + Math.random() * 64,
+                            y: 24 + Math.random() * 58
+                        };
+                    } while (
+                        Math.hypot(
+                            this.kurstyPosition.x - previousPosition.x,
+                            this.kurstyPosition.y - previousPosition.y
+                        ) < 24
+                    );
+                    this.el.kurstyShadow.style.left = this.kurstyPosition.x + '%';
+                    this.el.kurstyShadow.style.top = this.kurstyPosition.y + '%';
+                }
+
+                updateCapture(deltaSeconds) {
+                    if (this.phase !== 'capture') return;
+
+                    const targetX = this.kurstyPosition.x / 100 * this.width;
+                    const targetY = this.kurstyPosition.y / 100 * this.height;
+                    const holdingKursty = this.lamp &&
+                        Math.hypot(this.lamp.x - targetX, this.lamp.y - targetY) <
+                        this.currentLampRadius() * 0.72;
+
+                    if (holdingKursty) {
+                        this.captureProgress += deltaSeconds / (CAPTURE_TIME / 1000);
+                        this.lastKurstyMove = Date.now();
+                    } else {
+                        this.captureProgress = Math.max(0, this.captureProgress - CAPTURE_DECAY * deltaSeconds * 1000);
+                        if (Date.now() - this.lastKurstyMove >= MOVE_EVERY) {
+                            this.captureTries++;
+                            this.moveKursty();
+                            this.lastKurstyMove = Date.now();
+                            this.el.captureCounter.textContent = this.captureTries >= CAPTURE_TRIES_HINT
+                                ? 'Kursty fuit encore. Vise le centre de sa silhouette et garde la lumière dessus.'
+                                : 'Kursty s’est échappé ' + this.captureTries + ' fois.';
+                        }
+                    }
+
+                    this.captureProgress = Math.min(1, this.captureProgress);
+                    const percent = Math.round(this.captureProgress * 100);
+                    this.el.captureProgressFill.style.width = percent + '%';
+                    this.el.captureProgressValue.textContent = percent + ' %';
+                    this.el.captureProgressTrack.setAttribute('aria-valuenow', String(percent));
+                    if (this.captureProgress >= 1) this.finishGame();
+                }
+
+                currentLampRadius() {
+                    return MIN_LAMP_RADIUS + (LAMP_RADIUS - MIN_LAMP_RADIUS) * this.lampCharge;
+                }
+
+                startGameAudio(phaseAudio) {
+                    if (this.heartAudio.paused) this.playAudio(this.heartAudio);
+                    if (this.ambienceAudio.paused) this.playAudio(this.ambienceAudio);
+                    this.startPhaseAudio(phaseAudio);
+                }
+
+                startPhaseAudio(audio) {
+                    if (this.phaseAudio === audio && !audio.paused) return;
+
+                    this.stopPhaseAudio();
+                    this.phaseAudio = audio;
+                    this.playAudio(audio);
+                }
+
+                playAudio(audio) {
+                    audio.play().catch((error) => {
+                        if (error.name === 'AbortError') return;
+                        console.error('Impossible de lire ' + audio.src, error);
+                    });
+                }
+
+                stopPhaseAudio() {
+                    [this.searchAudio, this.kurstyAudio].forEach((audio) => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    });
+                    this.phaseAudio = null;
+                }
+
+                stopGameAudio() {
+                    this.stopPhaseAudio();
+                    [this.heartAudio, this.ambienceAudio, this.wrongAudio, this.captureSuccessAudio].forEach((audio) => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    });
+                }
+
+                updateLampCharge(deltaSeconds) {
+                    const shakeSpeed = this.shakeDistance / Math.max(deltaSeconds, 0.001);
+                    this.shakeDistance = 0;
+
+                    if (shakeSpeed >= SHAKE_SPEED_THRESHOLD) {
+                        this.lampCharge += CHARGE_RESTORE_PER_SECOND * deltaSeconds;
+                        if (this.lampCharge < 0.35 && !this.timedOut) {
+                            this.el.sceneText.textContent = 'La lampe reprend de la force. Continue de la secouer.';
+                        }
+                    } else {
+                        const drainRate = this.phase === 'capture'
+                            ? CAPTURE_CHARGE_DRAIN_PER_SECOND
+                            : CHARGE_DRAIN_PER_SECOND;
+                        this.lampCharge -= drainRate * deltaSeconds;
+                        if (this.lampCharge < 0.2 && !this.timedOut) {
+                            this.el.sceneText.textContent = 'La lumière faiblit. Secoue la lampe avant qu’elle ne s’éteigne.';
+                        }
+                    }
+
+                    this.lampCharge = Math.max(0, Math.min(1, this.lampCharge));
+                    const percent = Math.round(this.lampCharge * 100);
+                    this.el.lampChargeFill.style.width = percent + '%';
+                    this.el.lampChargeValue.textContent = percent + ' %';
+                    this.el.lampChargeTrack.setAttribute('aria-valuenow', String(percent));
+                    this.el.lampCharge.classList.toggle('is-low', percent <= 20);
+                    return shakeSpeed;
+                }
+
+                updateKurstyPressure(deltaSeconds, shakeSpeed) {
+                    if (shakeSpeed >= SHAKE_SPEED_THRESHOLD) {
+                        this.kurstyPressure -= PRESSURE_REDUCTION_PER_SECOND * deltaSeconds;
+                    } else {
+                        this.kurstyPressure += (
+                            PRESSURE_BASE_PER_SECOND +
+                            (1 - this.lampCharge) * PRESSURE_LOW_CHARGE_PER_SECOND
+                        ) * deltaSeconds;
+                    }
+
+                    this.kurstyPressure = Math.max(0, Math.min(1, this.kurstyPressure));
+                    const pressure = this.kurstyPressure;
+                    this.el.stage.style.setProperty('--vignette-blur', (12 + pressure * 34) + 'px');
+                    this.el.stage.style.setProperty('--vignette-spread', (pressure * 20) + 'px');
+                    this.el.stage.style.setProperty('--vignette-opacity', (pressure * 0.78).toFixed(3));
+                    this.el.stage.style.setProperty(
+                        '--vignette-color',
+                        pressure > 0.65 ? '232, 38, 28' : '255, 122, 26'
+                    );
+                    this.el.roomGlowWarm.style.opacity = (1 - pressure).toFixed(3);
+                    this.el.roomGlowDanger.style.opacity = pressure.toFixed(3);
+
+                    if (pressure >= 1) this.failGame();
+                }
+
+                drawNoise() {
+                    const canvas = this.el.noiseCanvas;
+                    const ctx = this.noiseCtx;
+                    const width = canvas.width;
+                    const height = canvas.height;
+                    ctx.clearRect(0, 0, width, height);
+
+                    if (!this.lamp) return;
+
+                    const image = ctx.createImageData(width, height);
+                    for (let i = 0; i < image.data.length; i += 4) {
+                        const shade = 170 + Math.floor(Math.random() * 86);
+                        image.data[i] = shade;
+                        image.data[i + 1] = shade;
+                        image.data[i + 2] = shade;
+                        image.data[i + 3] = Math.floor(Math.random() * 30);
+                    }
+                    ctx.putImageData(image, 0, 0);
+
+                    const scaleX = width / this.width;
+                    const scaleY = height / this.height;
+                    const radius = this.currentLampRadius() * Math.min(scaleX, scaleY);
+                    const lampX = this.lamp.x * scaleX;
+                    const lampY = this.lamp.y * scaleY;
+                    const mask = ctx.createRadialGradient(lampX, lampY, 0, lampX, lampY, radius);
+                    mask.addColorStop(0, 'rgba(255,255,255,0.3)');
+                    mask.addColorStop(0.65, 'rgba(255,255,255,0.2)');
+                    mask.addColorStop(0.88, 'rgba(255,255,255,0.08)');
+                    mask.addColorStop(1, 'rgba(255,255,255,0)');
+                    ctx.globalCompositeOperation = 'destination-in';
+                    ctx.fillStyle = mask;
+                    ctx.fillRect(0, 0, width, height);
+
+                    const vignetteRadius = radius * 1.18;
+                    const vignette = ctx.createRadialGradient(
+                        lampX, lampY, radius * 0.52,
+                        lampX, lampY, vignetteRadius
+                    );
+                    vignette.addColorStop(0, 'rgba(0,0,0,0)');
+                    vignette.addColorStop(0.42, 'rgba(0,0,0,0.08)');
+                    vignette.addColorStop(0.72, 'rgba(0,0,0,0.3)');
+                    vignette.addColorStop(1, 'rgba(0,0,0,0)');
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.fillStyle = vignette;
+                    ctx.fillRect(0, 0, width, height);
+                }
+
+                draw(timestamp) {
+                    if (this.completed) return;
+
+                    const elapsed = Math.min(1, Math.max(0, (timestamp - this.lastFrameTime) / 1000));
+                    this.lastFrameTime = timestamp;
+                    const shakeSpeed = this.updateLampCharge(elapsed);
+                    this.updateGameTimer();
+                    this.updateKurstyPressure(elapsed, shakeSpeed);
+                    if (this.failed) return;
+                    this.updateKurstyMovement();
+                    this.updateCapture(elapsed);
+                    if (this.completed) return;
+                    this.expireFoundTraces(timestamp);
+
+                    const ctx = this.ctx;
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.clearRect(0, 0, this.width, this.height);
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(0, 0, this.width, this.height);
+
+                    if (this.lamp) {
+                        const radius = this.currentLampRadius();
+                        const lampX = this.lamp.x + (Math.random() * 4 - 2);
+                        const lampY = this.lamp.y + (Math.random() * 4 - 2);
+                        const light = ctx.createRadialGradient(
+                            lampX, lampY, 0,
+                            lampX, lampY, radius
+                        );
+                        light.addColorStop(0, 'rgba(0,0,0,' + (0.25 + this.lampCharge * 0.75).toFixed(3) + ')');
+                        light.addColorStop(0.7, 'rgba(0,0,0,' + (0.15 + this.lampCharge * 0.45).toFixed(3) + ')');
+                        light.addColorStop(1, 'rgba(0,0,0,0)');
+                        ctx.globalCompositeOperation = 'destination-out';
+                        ctx.fillStyle = light;
+                        ctx.beginPath();
+                        ctx.arc(lampX, lampY, radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.globalCompositeOperation = 'source-over';
+                    }
+
+                    this.traces.forEach((trace) => {
+                        if (!trace.found || trace.visibleUntil === 0) return;
+                        ctx.globalCompositeOperation = 'destination-out';
+                        trace.marks.forEach((mark) => {
+                            ctx.beginPath();
+                            ctx.arc(mark.x, mark.y, 12, 0, Math.PI * 2);
+                            ctx.fill();
+                        });
+                    });
+
+                    ctx.globalCompositeOperation = 'source-over';
+                    this.discoverTraces();
+                    this.frameId = requestAnimationFrame((time) => this.draw(time));
+                }
+
+                finishGame() {
+                    this.completed = true;
+                    this.stopPhaseAudio();
+                    this.playAudio(this.captureSuccessAudio);
+                    if (this.frameId) cancelAnimationFrame(this.frameId);
+                    if (this.noiseTimer) clearInterval(this.noiseTimer);
+                    this.noiseTimer = null;
+                    this.el.stage.classList.add('is-complete');
+                    this.el.success.hidden = false;
+                    const ending = this.timedOut
+                        ? 'Kursty est capturé, mais la fête s’est achevée dans le chaos.'
+                        : 'Kursty est capturé. La voie est libre.';
+                    this.el.successMessage.textContent = ending;
+                    this.el.sceneText.textContent = ending;
+                }
+
+                failGame() {
+                    if (this.failed || this.completed) return;
+                    this.failed = true;
+                    this.stopPhaseAudio();
+                    this.playAudio(this.wrongAudio);
+                    if (this.frameId) cancelAnimationFrame(this.frameId);
+                    if (this.noiseTimer) clearInterval(this.noiseTimer);
+                    this.frameId = null;
+                    this.noiseTimer = null;
+                    this.lamp = null;
+                    this.el.stage.classList.add('is-failed');
+                    this.el.failure.hidden = false;
+                    this.el.sceneText.textContent = 'Quelque chose a atteint la salle. La lampe ne répond plus.';
+                }
+
+                retry() {
+                    this.stopPhaseAudio();
+                    this.wrongAudio.pause();
+                    this.wrongAudio.currentTime = 0;
+                    this.failed = false;
+                    this.completed = false;
+                    this.foundCount = 0;
+                    this.phase = 'trace';
+                    this.captureProgress = 0;
+                    this.captureTries = 0;
+                    this.lastKurstyMove = 0;
+                    this.kurstyPosition = { x: 50, y: 50 };
+                    this.startTime = Date.now();
+                    this.timedOut = false;
+                    this.lastTimerSecond = -1;
+                    this.lampCharge = 1;
+                    this.kurstyPressure = 0;
+                    this.shakeDistance = 0;
+                    this.previousPointer = null;
+                    this.lamp = null;
+                    this.el.stage.classList.remove('is-failed');
+                    this.el.failure.hidden = true;
+                    this.el.success.hidden = true;
+                    this.el.stage.classList.remove('is-complete');
+                    this.el.phaseTitle.textContent = 'LA TRAQUE';
+                    this.el.phaseInstructions.textContent = 'Explore la salle avec ta lampe. Trouve les cinq bonnes traces parmi les fausses : les bonnes restent visibles 6 secondes après découverte. Observe attentivement la taille et le sens des empreintes. La lampe faiblit vite : secoue la souris pour la recharger.';
+                    this.el.captureProgress.hidden = true;
+                    this.el.captureProgressFill.style.width = '0%';
+                    this.el.captureProgressValue.textContent = '0 %';
+                    this.el.captureProgressTrack.setAttribute('aria-valuenow', '0');
+                    this.el.kurstyShadow.classList.remove('is-hunting');
+                    this.el.kurstyShadow.style.left = '50%';
+                    this.el.kurstyShadow.style.top = '50%';
+                    this.el.kurstyShadow.classList.add('is-hunting');
+                    this.el.gameTimer.classList.remove('is-expired');
+                    this.el.gameTimerValue.textContent = '03:00';
+                    this.lastKurstyMove = this.startTime;
+                    this.el.captureCounter.textContent = 'Kursty n’a pas encore fui.';
+                    this.el.counter.textContent = 'Bonnes traces trouvées : 0 / ' + GOOD_TRACES;
+                    this.el.lampChargeFill.style.width = '100%';
+                    this.el.lampChargeValue.textContent = '100 %';
+                    this.el.lampChargeTrack.setAttribute('aria-valuenow', '100');
+                    this.el.lampCharge.classList.remove('is-low');
+                    this.el.roomGlowWarm.style.opacity = '1';
+                    this.el.roomGlowDanger.style.opacity = '0';
+                    this.el.sceneText.textContent = 'La fête recommence dans le noir. Trouve les traces avant que Kursty approche.';
+                    this.updateGameTimer();
+                    this.spawnTraces();
+                    this.startGameAudio(this.searchAudio);
+                    this.lastFrameTime = performance.now();
+                    this.drawNoise();
+                    this.noiseTimer = setInterval(() => this.drawNoise(), NOISE_REFRESH_MS);
+                    this.frameId = requestAnimationFrame((time) => this.draw(time));
+                }
+
+                complete() {
+                    if (!this.completed || this.completionReported) return;
+                    this.completionReported = true;
+                    this.stopGameAudio();
+                    this.el.btnContinue.disabled = true;
+
+                    if (typeof this.config.onLevelComplete === 'function') {
+                        this.config.onLevelComplete({
+                            level: 5,
+                            status: 'completed',
+                            timeElapsed: Math.round((Date.now() - this.startTime) / 1000)
+                        });
+                    }
+                }
+            }
+
+            function start() {
+                window.redemarrageFinal = new TraceGame(window.finalConfig || {});
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', start);
+            } else {
+                start();
+            }
+        })();
+    </script>
+</body>
+</html>

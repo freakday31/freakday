@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Baraque des Horreurs - Niveau 3 : La Bande</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Ultra&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/niveau3.css">
+    <link rel="stylesheet" href="../logo.css">
+    <link rel="stylesheet" href="../css/freakday.css">
+    <script src="../typing-sound.js" defer></script>
+</head>
+<body class="fd-page">
+    <div class="fd-bg" aria-hidden="true"></div>
+
+    <!-- AVERTISSEMENT SONORE -->
+    <div id="gate" class="gate">
+        <div class="gate-box">
+            <div class="fd-logo-zone">
+                <img class="site-logo fd-logo" src="../images/freakday-titre.png" alt="Freak Day">
+            </div>
+            <h1>AVERTISSEMENT SONORE</h1>
+            <p>
+                Ce niveau contient une ambiance sonore oppressante, avec des voix et des bruits forts.
+                Tu peux quitter à tout moment.
+            </p>
+            <div class="gate-actions">
+                <button type="button" class="btn btn-primary fd-btn" id="btnEnter">Continuer</button>
+                <button type="button" class="btn" id="btnLeave">Quitter</button>
+            </div>
+            <p id="leaveMsg" class="leave-msg" hidden>Tu peux fermer cette page.</p>
+        </div>
+    </div>
+
+    <main id="game" class="game fd-frame" hidden>
+        <header class="game-header">
+            <img class="game-title-image" src="../media/titre%205-3.jpg" alt="La Bande, attraction 5-3">
+            <h1 class="game-title fd-title">LA BANDE</h1>
+            <p class="game-sub">La Baraque des Horreurs — Niveau 3</p>
+            <button type="button" class="btn btn-small" id="btnMission">Revoir la mission</button>
+        </header>
+
+        <section class="mission" id="missionBox" hidden>
+            <h2>MISSION : LA BANDE</h2>
+            <p>La nuit de la fête, Kursty a enregistré une cassette. Elle est restée dans sa boîte, et elle est plus longue que prévu.</p>
+            <ol>
+                <li><strong>Étape 1 :</strong> Lance la cassette. Une voix compte à rebours, puis la phrase de la cassette commence.</li>
+                <li><strong>Étape 2 :</strong> Pendant la phrase, des bips sont cachés sous la voix. Court ou long, chaque bip est un signal du code Morse. Note les chiffres qu'ils forment.</li>
+                <li><strong>Étape 3 :</strong> La cassette existe en deux versions. Une seule contient la vraie bande. La vraie phrase est celle qui correspond au carnet.</li>
+            </ol>
+            <p>Tape les deux chiffres obtenus pour continuer.</p>
+        </section>
+
+        <p class="status" id="status" aria-live="polite"></p>
+
+        <!-- ÉTAPE 1 et 2 : les deux cassettes -->
+        <section class="step" id="stepTapes">
+            <h2 class="step-title">Étape 1 et 2 — Écoute les cassettes</h2>
+            <p class="step-text">Lance chaque cassette. La phrase et les bips se jouent ensemble : écoute bien le fond sonore.</p>
+
+            <div class="tapes">
+                <div class="tape" data-tape="A">
+                    <h3>CASSETTE A</h3>
+                    <p class="tape-label">Étiquette : « Visite du soir »</p>
+                    <img class="tape-image" src="../media/k7a.png" alt="Cassette A, Visite du soir">
+                    <div class="tape-controls">
+                        <button type="button" class="btn" data-action="play" data-tape="A">▶ Lecture</button>
+                        <button type="button" class="btn" data-action="stop" data-tape="A">■ Stop</button>
+                    </div>
+                    <audio id="audioA" preload="none" src="media/audio/phrase-version-A.mp3"></audio>
+                </div>
+
+                <div class="tape" data-tape="B">
+                    <h3>CASSETTE B</h3>
+                    <p class="tape-label">Étiquette : « Nuit de la fête »</p>
+                    <img class="tape-image" src="../media/k7b.png" alt="Cassette B, Nuit de la fête">
+                    <div class="tape-controls">
+                        <button type="button" class="btn" data-action="play" data-tape="B">▶ Lecture</button>
+                        <button type="button" class="btn" data-action="stop" data-tape="B">■ Stop</button>
+                    </div>
+                    <audio id="audioB" preload="none" src="media/audio/phrase-version-B.mp3"></audio>
+                </div>
+            </div>
+
+            <div class="morse-table">
+                <img class="morse-image" src="../media/tablemorse.png" alt="Table Morse des chiffres de 0 à 9, avec les signaux courts et longs">
+            </div>
+        </section>
+
+        <!-- ÉTAPE 3 : réponse -->
+        <section class="step" id="stepAnswer">
+            <h2 class="step-title">Étape 3 — Le choix de la bande</h2>
+            <p class="step-text">Quelle cassette contient la vraie bande ? Puis tape les deux chiffres trouvés.</p>
+
+            <form class="answer-form" id="answerForm" autocomplete="off">
+                <div class="radio-row" role="radiogroup" aria-label="Cassette choisie">
+                    <label class="radio"><input type="radio" name="tape" value="A"> Cassette A</label>
+                    <label class="radio"><input type="radio" name="tape" value="B"> Cassette B</label>
+                </div>
+                <div class="digits-row">
+                    <input class="digits-input" id="digitsInput" type="text" inputmode="numeric"
+                           maxlength="2" placeholder="00" aria-label="Deux chiffres" />
+                    <button type="submit" class="btn btn-primary fd-btn" id="btnAnswer">Valider</button>
+                </div>
+            </form>
+            <p class="feedback" id="answerFb" aria-live="polite"></p>
+        </section>
+
+        <!-- RÉUSSITE : révélation du numéro -->
+        <section class="reveal" id="reveal" hidden>
+            <div class="page">
+                <p class="page-text">La vraie bande était la cassette B. Le numéro révélé est <strong>31</strong>.</p>
+            </div>
+            <p class="step-text">Souviens-toi du numéro, il te servira au niveau suivant.</p>
+            <button type="button" class="btn btn-primary fd-btn" id="btnContinue">Passer au niveau suivant</button>
+        </section>
+    </main>
+
+    <audio id="audioCountdown" preload="none" src="media/audio/compte-a-rebours.mp3"></audio>
+
+    <script>
+        window.baraqueConfig = {
+            onLevelComplete(data) {
+                if (window.parent !== window && data.level === 3 && data.status === 'completed') {
+                    window.parent.postMessage({
+                        type: 'baraque-niveau3-complete',
+                        level: data.level,
+                        status: data.status
+                    }, '*');
+                }
+            }
+        };
+    </script>
+    <script src="js/niveau3.js"></script>
+</body>
+</html>

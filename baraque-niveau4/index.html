@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Baraque des Horreurs - Niveau 4 : Le Labyrinthe des balises</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Ultra&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/niveau4.css">
+    <link rel="stylesheet" href="../logo.css">
+    <link rel="stylesheet" href="../css/freakday.css">
+    <script src="../typing-sound.js" defer></script>
+</head>
+<body class="fd-page">
+    <div class="fd-bg" aria-hidden="true"></div>
+
+    <!-- AVERTISSEMENT DE CONTENU -->
+    <div id="gate" class="gate">
+        <div class="gate-box">
+            <div class="fd-logo-zone">
+                <img class="site-logo fd-logo" src="../images/freakday-titre.png" alt="Freak Day">
+            </div>
+            <h1>AVERTISSEMENT DE CONTENU</h1>
+            <p>
+                Ce niveau contient une ambiance oppressante et des phrases dérangeantes.
+                Tu peux quitter à tout moment.
+            </p>
+            <div class="gate-actions">
+                <button type="button" class="btn btn-primary fd-btn" id="btnEnter">Continuer</button>
+                <button type="button" class="btn" id="btnLeave">Quitter</button>
+            </div>
+            <p id="leaveMsg" class="leave-msg" hidden>Tu peux fermer cette page.</p>
+        </div>
+    </div>
+
+    <main id="game" class="game fd-frame" hidden>
+        <header class="game-header">
+            <img class="game-title-image" src="../media/labyrinthe.jpg" alt="Labyrinthe, attraction 5-4">
+            <h1 class="game-title fd-title">LE LABYRINTHE DES BALISES</h1>
+            <p class="game-sub">La Baraque des Horreurs — Niveau 4</p>
+            <button type="button" class="btn btn-small" id="btnMission">Revoir la mission</button>
+        </header>
+
+        <section class="mission" id="missionBox" hidden>
+            <h2>MISSION : LE LABYRINTHE DES BALISES</h2>
+            <p>Kursty a installé trois parcours de balises dans la baraque. Les plans s’agrandissent à chaque étape.</p>
+            <ol>
+                <li><strong>Parcours 1 :</strong> mémorise puis touche les 3 balises dans l’ordre indiqué.</li>
+                <li><strong>Parcours 2 :</strong> recommence avec 5 balises sur un plan plus vaste.</li>
+                <li><strong>Parcours 3 :</strong> trouve les 9 balises pour ouvrir l’accès à l’interlude.</li>
+            </ol>
+            <p><strong>Attention :</strong> les commandes sont inversées. Pour aller à droite, appuie sur gauche.</p>
+            <p>Les murs murmurent des phrases du carnet quand tu les heurtes.</p>
+        </section>
+
+        <div class="maze-head">
+            <p class="status" id="status" aria-live="polite"></p>
+            <p class="maze-counter" id="counter"></p>
+        </div>
+
+        <div class="maze-wrap">
+            <div class="maze" id="maze" role="img" aria-label="Labyrinthe"></div>
+        </div>
+
+        <p class="wall-msg" id="wallMsg" aria-live="polite"></p>
+
+        <div class="dpad" id="dpad">
+            <button type="button" class="dpad-btn dpad-up" data-dir="up" aria-label="Haut">▲</button>
+            <button type="button" class="dpad-btn dpad-left" data-dir="left" aria-label="Gauche">◀</button>
+            <button type="button" class="dpad-btn dpad-right" data-dir="right" aria-label="Droite">▶</button>
+            <button type="button" class="dpad-btn dpad-down" data-dir="down" aria-label="Bas">▼</button>
+        </div>
+
+        <div class="actions">
+            <button type="button" class="btn" id="btnFlash">Revoir les balises</button>
+        </div>
+
+        <section class="result" id="result" hidden>
+            <div class="word-box">
+                <p class="word-label" id="resultLabel">MOT DU PARCOURS 1</p>
+                <p class="word" id="key">LUI</p>
+            </div>
+            <p class="step-text" id="resultMessage">Souviens-toi du mot trouvé.</p>
+            <button type="button" class="btn btn-primary fd-btn" id="btnContinue">J’ai noté la clé · Continuer</button>
+        </section>
+    </main>
+
+    <script>
+        window.baraqueConfig = {
+            onLevelComplete(data) {
+                if (window.parent !== window && data.level === 4 && data.status === 'completed') {
+                    window.parent.postMessage({
+                        type: 'baraque-niveau4-complete',
+                        level: data.level,
+                        status: data.status
+                    }, '*');
+                }
+            }
+        };
+    </script>
+    <script src="js/niveau4.js"></script>
+</body>
+</html>
