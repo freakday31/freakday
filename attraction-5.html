@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#11100e">
+    <title>La Baraque des Horreurs | Freak Day</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Ultra&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="logo.css">
+    <script src="typing-sound.js" defer></script>
+    <style>
+        :root {
+            color-scheme: dark;
+            --ink: #11100e;
+            --panel: #1b1915;
+            --paper: #e6d5b8;
+            --muted: #a69b88;
+            --orange: #f06b28;
+            --gold: #e8b84b;
+            --red: #a83428;
+            --line: rgba(230, 213, 184, .18);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            color: var(--paper);
+            background: var(--ink) url('images%20glitch/hero.jpg') center / cover fixed;
+            font-family: 'Courier New', monospace;
+        }
+
+        body::before {
+            position: fixed;
+            z-index: -1;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, .7) 100%);
+            content: '';
+        }
+
+        button, input { font: inherit; }
+
+        .page-shell {
+            width: min(1100px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 28px 0 64px;
+        }
+
+        #game {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .topline, .progress-heading, .step-heading, .actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        a { color: var(--paper); }
+
+        .back-link {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .back-link:hover { text-decoration: underline; }
+
+        .eyebrow, .step-count, .progress-heading, .step-state {
+            color: var(--gold);
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow { margin: 0 0 12px; }
+
+        h1, h2, p { margin-top: 0; }
+
+        h1 {
+            max-width: 780px;
+            margin-bottom: 12px;
+            color: #fff0d8;
+            font-size: 4.5rem;
+            line-height: .98;
+            text-transform: uppercase;
+        }
+
+        .intro {
+            max-width: 640px;
+            margin-bottom: 34px;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        body.level-active h1 {
+            font-size: 2.6rem;
+            margin-bottom: 8px;
+        }
+
+        body.level-active .intro { margin-bottom: 18px; }
+
+        .progress-heading { margin-bottom: 12px; }
+
+        .progress-track {
+            height: 5px;
+            overflow: hidden;
+            background: rgba(230, 213, 184, .17);
+        }
+
+        .progress-fill {
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--red), var(--orange), var(--gold));
+            transition: width .35s ease;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+            margin: 18px 0 28px;
+        }
+
+        .step-tab {
+            min-height: 60px;
+            padding: 10px;
+            border: 1px solid var(--line);
+            color: var(--muted);
+            background: rgba(17, 16, 14, .82);
+            text-align: left;
+        }
+
+        .step-tab[aria-current="step"] {
+            border-color: var(--orange);
+            color: #fff0d8;
+            box-shadow: inset 0 -3px var(--orange);
+        }
+
+        .step-tab.is-complete { color: var(--gold); }
+        .step-tab:disabled { cursor: not-allowed; opacity: .56; }
+        .step-tab:not(:disabled) { cursor: pointer; }
+
+        .puzzle-panel {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: clamp(22px, 5vw, 44px);
+            border: 1px solid var(--line);
+            border-top: 3px solid var(--orange);
+            background: rgba(20, 18, 15, .94);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, .4);
+        }
+
+        .step-heading { margin-bottom: 24px; }
+        .step-heading h2 { margin: 0; color: #fff0d8; font-size: 1.45rem; }
+
+        .riddle-text {
+            min-height: 90px;
+            margin: 0 0 20px;
+            color: var(--paper);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+
+        .hint {
+            margin: 0 0 25px;
+            padding-left: 14px;
+            border-left: 2px solid var(--gold);
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        label { display: block; margin-bottom: 8px; color: var(--gold); font-size: .8rem; text-transform: uppercase; }
+
+        input {
+            width: 100%;
+            min-height: 50px;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 0;
+            outline: none;
+            color: #fff0d8;
+            background: #100f0d;
+        }
+
+        input:focus { border-color: var(--gold); }
+
+        .actions { justify-content: flex-start; margin-top: 14px; }
+
+        .submit-button {
+            min-height: 46px;
+            padding: 10px 18px;
+            border: 0;
+            color: #160f0b;
+            background: var(--orange);
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .submit-button:hover:not(:disabled) { background: var(--gold); }
+        .submit-button:disabled { cursor: not-allowed; opacity: .55; }
+
+        .status { min-height: 24px; margin: 16px 0 0; color: var(--gold); }
+        .status.is-error { color: #ff8871; }
+
+        .locked-message, .complete-message {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 28px;
+            border-left: 3px solid var(--red);
+            background: rgba(20, 18, 15, .94);
+            line-height: 1.7;
+        }
+
+        .complete-message { border-color: var(--gold); }
+        .return-button { display: inline-block; margin-top: 12px; color: var(--gold); }
+
+        .carnet-panel {
+            max-width: 960px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .carnet-frame {
+            display: block;
+            width: 100%;
+            height: 640px;
+            min-height: 0;
+            border: 0;
+            background: #0b0807;
+            overflow: hidden;
+        }
+
+        #finaleGame { height: 1100px; }
+
+        .contact-transition {
+            padding: clamp(28px, 7vw, 64px) 24px;
+            text-align: center;
+        }
+
+        .contact-transition h2 {
+            margin-bottom: 10px;
+            color: #fff0d8;
+            font-size: 1.4rem;
+        }
+
+        .contact-word {
+            display: block;
+            margin: 8px 0 18px;
+            color: var(--gold);
+            font-size: clamp(4rem, 14vw, 8rem);
+            font-weight: 700;
+            line-height: 1;
+            text-shadow: 0 0 30px rgba(232, 184, 75, .34);
+        }
+
+        .contact-transition p {
+            max-width: 520px;
+            margin: 0 auto 14px;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .contact-transition .submit-button { margin-top: 8px; }
+
+        .interlude-jumpscare {
+            position: fixed;
+            z-index: 999999;
+            inset: 0;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .interlude-jumpscare img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .interlude-jumpscare img:first-child {
+            animation: interlude-image-one 0.14s steps(1, end) infinite;
+        }
+
+        .interlude-jumpscare img:last-child {
+            animation: interlude-image-two 0.14s steps(1, end) infinite;
+        }
+
+        @keyframes interlude-image-one {
+            0%, 49.99% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        @keyframes interlude-image-two {
+            0%, 49.99% { opacity: 0; }
+            50%, 100% { opacity: 1; }
+        }
+
+        @media (max-width: 620px) {
+            .page-shell { width: min(100% - 28px, 1100px); padding-top: 20px; }
+            .topline { align-items: flex-start; flex-direction: column; gap: 10px; }
+            h1 { font-size: 2.3rem; }
+            .steps { gap: 5px; }
+            .step-tab { min-height: 54px; padding: 7px 5px; font-size: .72rem; text-align: center; }
+            .puzzle-panel { padding: 22px 18px; }
+        }
+    </style>
+    <link rel="stylesheet" href="css/freakday.css">
+</head>
+<body class="fd-page">
+    <div class="fd-bg" aria-hidden="true"></div>
+    <main class="page-shell fd-frame">
+        <div class="fd-logo-zone">
+            <img class="site-logo fd-logo" src="images/freakday-titre.png" alt="Freak Day">
+        </div>
+        <div class="topline">
+            <a class="back-link" id="backLink" href="FREAK%20DAY%20-%20ARG%20Halloween%20Studio%20REG.html">← Retour au parc</a>
+            <p class="eyebrow">Freak Day / Épreuve finale</p>
+        </div>
+        <header>
+            <p class="eyebrow">Attraction 05 · Réservée aux visiteurs ayant tout résolu</p>
+            <h1 class="fd-title">La Baraque des Horreurs</h1>
+            <p class="intro">Cinq niveaux. Un interlude. Une seule sortie.</p>
+        </header>
+
+        <section id="game" aria-live="polite"></section>
+    </main>
+
+    <script>
+        const mainPage = 'FREAK%20DAY%20-%20ARG%20Halloween%20Studio%20REG.html';
+        const requiredAttractions = ['manege', 'miroir', 'kiosque', 'interdite'];
+        const progressKey = 'foireNoire';
+        const enigmes = [
+            { titre: 'Le Carnet', enonce: '', indice: '', reponse: 'REVIENS' },
+            { titre: 'Le Contact', enonce: '', indice: '', reponse: 'DAY' },
+            { titre: 'La Bande', enonce: '', indice: '', reponse: '31' },
+            { titre: 'Le Labyrinthe', enonce: '', indice: '', reponse: 'LUI' },
+            { titre: 'Interlude', enonce: '', indice: '', reponse: 'PEUR' },
+            { titre: 'La Baraque', enonce: '', indice: '', reponse: 'FREAKDAY31' }
+        ];
+
+        let progress = {};
+        let activeStage = 0;
+        let contactAwaitingContinue = false;
+
+        try {
+            progress = JSON.parse(localStorage.getItem(progressKey) || '{}');
+        } catch {
+            progress = {};
+        }
+
+        const query = new URLSearchParams(location.search);
+        const queryStage = Number(query.get('stage'));
+        if (query.has('stage') && Number.isInteger(queryStage) && queryStage >= 0) {
+            progress.baraqueEtape = Math.max(Number(progress.baraqueEtape) || 0, Math.min(queryStage, enigmes.length));
+        }
+
+        const hasAccess = query.get('access') === '1' ||
+            requiredAttractions.every(id => progress[id]);
+        activeStage = Math.min(Number(progress.baraqueEtape) || 0, enigmes.length - 1);
+
+        function normalize(value) {
+            return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem(progressKey, JSON.stringify(progress));
+            } catch {
+                return false;
+            }
+            return true;
+        }
+
+        function backToParkUrl(complete = false) {
+            const query = new URLSearchParams();
+            if (complete) {
+                query.set('baraque', 'complete');
+            }
+            query.set('baraqueEtape', String(Math.min(Number(progress.baraqueEtape) || 0, enigmes.length)));
+            return `${mainPage}?${query.toString()}`;
+        }
+
+        function renderCarnet() {
+            return `<section class="puzzle-panel carnet-panel" aria-label="Le Carnet de Kursty">
+                <iframe class="carnet-frame" id="carnetGame" title="Le Carnet de Kursty, niveau 1" src="baraque-niveau1/index.html"></iframe>
+            </section>`;
+        }
+
+        function renderContact() {
+            return `<section class="puzzle-panel carnet-panel" aria-label="Le Contact avec Dorian">
+                <iframe class="carnet-frame" id="contactGame" title="Le Contact avec Dorian, niveau 2" src="baraque-niveau2/index.html"></iframe>
+            </section>`;
+        }
+
+        function renderBande() {
+            return `<section class="puzzle-panel carnet-panel" aria-label="La Bande de Kursty">
+                <iframe class="carnet-frame" id="bandeGame" title="La Bande de Kursty, niveau 3" src="baraque-niveau3/index.html"></iframe>
+            </section>`;
+        }
+
+        function renderLabyrinthe() {
+            return `<section class="puzzle-panel carnet-panel" aria-label="Le Labyrinthe des balises">
+                <iframe class="carnet-frame" id="labyrintheGame" title="Le Labyrinthe des balises, niveau 4" src="baraque-niveau4/index.html"></iframe>
+            </section>`;
+        }
+
+        function renderInterlude() {
+            return `<section class="puzzle-panel carnet-panel" aria-label="Interlude : Les cibles du signal">
+                <iframe class="carnet-frame" id="interludeGame" title="Interlude : Les cibles du signal" src="baraque-interlude/index.html"></iframe>
+            </section>`;
+        }
+
+        function renderFinale() {
+            return `<section class="puzzle-panel carnet-panel" aria-label="La Baraque, niveau 5">
+                <iframe class="carnet-frame" id="finaleGame" title="La Baraque, niveau 5" src="baraque-niveau5-redemarrage/index.html"></iframe>
+            </section>`;
+        }
+
+        function renderContactTransition() {
+            return `<section class="puzzle-panel contact-transition" aria-labelledby="contactRevealTitle">
+                <p class="eyebrow">Fin de la conversation</p>
+                <h2 id="contactRevealTitle">Dorian lâche un dernier mot</h2>
+                <strong class="contact-word">DAY</strong>
+                <p>« Ce soir-là, c’était le DAY de trop. »</p>
+                <p>Prends le temps de noter ce mot. Il te servira dans la prochaine épreuve.</p>
+                <button class="submit-button fd-btn" id="continueToStage3" type="button">J’ai noté le mot · Continuer</button>
+            </section>`;
+        }
+
+        function advanceStage(completed) {
+            if (activeStage !== completed) {
+                return;
+            }
+            if (completed === 4) {
+                document.getElementById('interludeJumpscare')?.remove();
+            }
+            const reachedStage = Number(progress.baraqueEtape) || 0;
+            if (completed >= reachedStage) {
+                progress.baraqueEtape = completed + 1;
+                if (progress.baraqueEtape === enigmes.length) {
+                    progress.baraque = true;
+                }
+                saveProgress();
+                const pageQuery = new URLSearchParams(location.search);
+                pageQuery.set('stage', String(progress.baraqueEtape));
+                window.history.replaceState({}, '', `${location.pathname}?${pageQuery.toString()}`);
+            }
+            activeStage = Math.min(Number(progress.baraqueEtape) || 0, enigmes.length - 1);
+            render();
+        }
+
+        window.addEventListener('message', event => {
+            const message = event.data;
+            if (message?.type === 'baraque-interlude-jumpscare-start') {
+                const interludeFrame = document.getElementById('interludeGame');
+                if (!interludeFrame || event.source !== interludeFrame.contentWindow) {
+                    return;
+                }
+                if (!document.getElementById('interludeJumpscare')) {
+                    const overlay = document.createElement('div');
+                    overlay.id = 'interludeJumpscare';
+                    overlay.className = 'interlude-jumpscare';
+                    overlay.setAttribute('aria-hidden', 'true');
+                    ['jumpscare1.jpg', 'jumpscare2.jpg'].forEach(name => {
+                        const image = document.createElement('img');
+                        image.src = `media/${name}`;
+                        image.alt = '';
+                        overlay.appendChild(image);
+                    });
+                    document.body.appendChild(overlay);
+                }
+                return;
+            }
+
+            if (message?.type === 'freak-day-frame-resize') {
+                const frame = [...document.querySelectorAll('.carnet-frame')]
+                    .find(candidate => candidate.contentWindow === event.source);
+                const height = Number(message.height);
+                if (!frame || !Number.isFinite(height) || height < 0) return;
+                frame.style.height = `${height}px`;
+                return;
+            }
+
+            if (message?.type === 'baraque-interlude-complete') {
+                const interludeFrame = document.getElementById('interludeGame');
+                if (!interludeFrame || event.source !== interludeFrame.contentWindow || message.status !== 'completed') {
+                    return;
+                }
+                advanceStage(4);
+                return;
+            }
+
+            const frames = {
+                1: ['carnetGame', 'baraque-niveau1-complete', 0],
+                2: ['contactGame', 'baraque-niveau2-complete', 1],
+                3: ['bandeGame', 'baraque-niveau3-complete', 2],
+                4: ['labyrintheGame', 'baraque-niveau4-complete', 3],
+                5: ['finaleGame', 'baraque-niveau5-complete', 5]
+            };
+            const frameInfo = frames[message?.level];
+            const frameId = frameInfo?.[0];
+            const expectedType = frameInfo?.[1];
+            const frame = frameId && document.getElementById(frameId);
+            if (!frame || event.source !== frame.contentWindow || message.type !== expectedType || message.status !== 'completed') {
+                return;
+            }
+            if (message.level === 2) {
+                if (!contactAwaitingContinue) {
+                    contactAwaitingContinue = true;
+                    render();
+                }
+                return;
+            }
+            advanceStage(frameInfo[2]);
+        });
+
+        function render() {
+            const game = document.getElementById('game');
+            document.getElementById('backLink').href = backToParkUrl();
+            if (!hasAccess) {
+                game.innerHTML = `<div class="locked-message"><strong>La Baraque reste fermée.</strong><br>Résous les quatre attractions du parc avant de revenir ici.<br><a class="return-button" href="${mainPage}">Retourner aux attractions</a></div>`;
+                return;
+            }
+
+            const completed = Math.min(Number(progress.baraqueEtape) || 0, enigmes.length);
+            if (completed >= enigmes.length || progress.baraque) {
+                document.body.classList.remove('level-active');
+                game.innerHTML = `<div class="complete-message"><strong>La Baraque est résolue.</strong><br>Tu as franchi les cinq épreuves.<br><a class="return-button" href="${backToParkUrl(true)}">Retourner au parc</a></div>`;
+                return;
+            }
+
+            activeStage = Math.min(activeStage, completed);
+            document.body.classList.toggle('level-active', activeStage <= 5);
+            const current = enigmes[activeStage];
+            const configured = Boolean(current.reponse.trim());
+            const stageTabs = enigmes.map((enigme, index) => {
+                const isLocked = index > completed;
+                const state = index < completed ? '✓' : String(index + 1).padStart(2, '0');
+                return `<button class="step-tab ${index < completed ? 'is-complete' : ''}" type="button" data-stage="${index}" ${isLocked ? 'disabled' : ''} ${index === activeStage ? 'aria-current="step"' : ''}>${state}<br>${enigme.titre}</button>`;
+            }).join('');
+
+            const stageContent = activeStage === 0 ? renderCarnet() : activeStage === 1 ? contactAwaitingContinue ? renderContactTransition() : renderContact() : activeStage === 2 ? renderBande() : activeStage === 3 ? renderLabyrinthe() : activeStage === 4 ? renderInterlude() : activeStage === 5 ? renderFinale() : `
+                <section class="puzzle-panel" aria-labelledby="stageTitle">
+                    <div class="step-heading"><h2 id="stageTitle">${current.titre}</h2><span class="step-count">Épreuve ${String(activeStage + 1).padStart(2, '0')} / 05</span></div>
+                    <p class="riddle-text">${current.enonce}</p>
+                    <p class="hint"><strong>Indice :</strong> ${current.indice}</p>
+                    <form id="answerForm">
+                        <label for="answer">Ta réponse</label>
+                        <input id="answer" name="answer" type="text" autocomplete="off" required>
+                        <div class="actions"><button class="submit-button fd-btn" type="submit" ${configured ? '' : 'disabled'}>${configured ? 'Valider la réponse' : 'Énigme à compléter'}</button></div>
+                        <p class="status" id="status" role="status">${configured ? '' : 'Renseigne l’énoncé, l’indice et la réponse dans le tableau enigmes de ce fichier.'}</p>
+                    </form>
+                </section>`;
+            const progressContent = `
+                <div class="progress-heading"><span>Progression</span><span>${completed} / ${enigmes.length} résolues</span></div>
+                <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="${enigmes.length}" aria-valuenow="${completed}"><div class="progress-fill" style="width:${completed / enigmes.length * 100}%"></div></div>
+                <nav class="steps" aria-label="Les cinq énigmes">${stageTabs}</nav>`;
+            game.innerHTML = activeStage <= 4 ? `${stageContent}${progressContent}` : `${progressContent}${stageContent}`;
+
+            game.querySelectorAll('[data-stage]').forEach(button => {
+                button.addEventListener('click', () => {
+                    activeStage = Number(button.dataset.stage);
+                    render();
+                });
+            });
+
+            const continueButton = document.getElementById('continueToStage3');
+            if (continueButton) {
+                continueButton.addEventListener('click', () => {
+                    contactAwaitingContinue = false;
+                    advanceStage(1);
+                });
+            }
+
+            if (activeStage <= 5) {
+                return;
+            }
+
+            const form = document.getElementById('answerForm');
+            form.addEventListener('submit', event => {
+                event.preventDefault();
+                const status = document.getElementById('status');
+                const answer = normalize(new FormData(form).get('answer'));
+                if (answer !== normalize(current.reponse)) {
+                    window.playAnswerSound('wrong');
+                    status.textContent = 'Cette réponse ne déverrouille pas la suite. Réessaie.';
+                    status.classList.add('is-error');
+                    return;
+                }
+
+                if (activeStage === completed) {
+                    window.playAnswerSound('correct');
+                    advanceStage(completed);
+                    return;
+                }
+
+                status.textContent = 'Cette étape est déjà résolue.';
+            });
+        }
+
+        render();
+    </script>
+</body>
+</html>

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Foire Noire - Studio REG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Ultra&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="logo.css">
+    <script src="typing-sound.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* PAGE: LANDING */
+        .page {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        #landing {
+            background: linear-gradient(135deg, #1a0033 0%, #2d0052 100%);
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .landing-content h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff00ff;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 20px #ff00ff; }
+            50% { text-shadow: 0 0 40px #ff00ff, 0 0 60px #ff00ff; }
+        }
+
+        .landing-content p {
+            font-size: 1.2em;
+            margin: 15px 0;
+            opacity: 0.9;
+        }
+
+        .warning-box {
+            background: rgba(255, 0, 255, 0.1);
+            border: 2px solid #ff00ff;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 40px auto;
+            max-width: 600px;
+        }
+
+        .warning-box p {
+            font-size: 1em;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .warning-box .warning-title {
+            font-size: 1.1em;
+            color: #ffaa00;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .enter-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            background: #ff00ff;
+            border: none;
+            color: #000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-family: monospace;
+            transition: all 0.3s;
+        }
+
+        .enter-btn:hover {
+            background: #ff33ff;
+            box-shadow: 0 0 20px #ff00ff;
+        }
+
+        /* PAGE: MAP */
+        #map {
+            background: linear-gradient(135deg, #0a0015 0%, #1a0033 100%);
+            padding: 40px 20px;
+            flex-direction: column;
+        }
+
+        .map-title {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px #ff00ff;
+        }
+
+        .attractions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .attraction-card {
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(100, 0, 100, 0.1));
+            border: 2px solid #ff00ff;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .attraction-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+        }
+
+        .attraction-card.unlocked {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 100, 0, 0.1));
+            border-color: #00ff00;
+        }
+
+        .attraction-card h2 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .attraction-card .difficulty {
+            color: #ffaa00;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .attraction-card .description {
+            color: #aaa;
+            font-size: 0.85em;
+            margin: 10px 0;
+            font-style: italic;
+        }
+
+        .attraction-card .unlocked-badge {
+            color: #00ff00;
+            font-size: 0.8em;
+            margin-top: 10px;
+        }
+
+        .lock-icon, .unlock-icon {
+            font-size: 1.5em;
+        }
+
+        /* PAGE: PUZZLE */
+        #puzzle {
+            background: linear-gradient(135deg, #0a0015 0%, #1a0033 100%);
+            padding: 40px 20px;
+            flex-direction: column;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            margin-bottom: 30px;
+            background: #ff00ff;
+            border: none;
+            color: #000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: monospace;
+            width: fit-content;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #ff33ff;
+        }
+
+        .puzzle-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(255, 0, 255, 0.05);
+            border: 2px solid #ff00ff;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .puzzle-container h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px #ff00ff;
+        }
+
+        .puzzle-container .difficulty {
+            font-size: 1.1em;
+            color: #ffaa00;
+            margin: 20px 0;
+        }
+
+        .enigma-box {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #00ff00;
+        }
+
+        .enigma-box p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        .enigma-box strong {
+            color: #00ff00;
+        }
+
+        .input-group {
+            margin: 30px 0;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #1a0033;
+            border: 2px solid #ff00ff;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: monospace;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #ff33ff;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #ff00ff;
+            border: none;
+            color: #000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            font-family: monospace;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #ff33ff;
+            box-shadow: 0 0 20px #ff00ff;
+        }
+
+        .unlocked-content {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 30px 0;
+        }
+
+        .unlocked-content .unlocked-badge {
+            color: #00ff00;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .media-section {
+            margin-bottom: 20px;
+        }
+
+        .media-section h3 {
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .media-placeholder {
+            background: #000;
+            border-radius: 5px;
+            padding: 40px 20px;
+            text-align: center;
+            color: #aaa;
+        }
+
+        .hint-box {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(100, 100, 100, 0.1);
+            border-radius: 5px;
+            font-size: 0.8em;
+            color: #aaa;
+        }
+
+        .hint-box p {
+            margin: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .landing-content h1 {
+                font-size: 2.5em;
+            }
+
+            .map-title {
+                font-size: 1.8em;
+            }
+
+            .attractions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .puzzle-container {
+                padding: 20px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="css/freakday.css">
+</head>
+<body class="fd-page fd-foire">
+    <div class="fd-bg" aria-hidden="true"></div>
+    <!-- LANDING PAGE -->
+    <div id="landing" class="page active">
+        <div class="landing-content">
+            <div class="fd-logo-zone">
+                <img class="site-logo fd-logo" src="images/freakday-titre.png" alt="Freak Day">
+            </div>
+            <h1 class="fd-title">🎪 LA FOIRE NOIRE 🎪</h1>
+            <p>Présentée par <strong>Studio REG</strong></p>
+            <p style="color: #ffaa00; font-size: 1.1em;">S'ouvre le 31 octobre</p>
+
+            <div class="warning-box">
+                <p class="warning-title">⚠️ PARCOURS HORRIFIQUE ⚠️</p>
+                <p>Une fête foraine abandonnée. Cinq attractions. Cinq énigmes.</p>
+                <p>Résous les puzzles. Déverrouille les vidéos et audios.</p>
+                <p>Découvre ce qui s'est réellement passé à la Foire...</p>
+            </div>
+
+            <button class="enter-btn fd-btn" onclick="goToPage('map')">Entrer à la Foire</button>
+        </div>
+    </div>
+
+    <!-- MAP PAGE -->
+    <div id="map" class="page">
+        <div class="fd-logo-zone">
+            <img class="site-logo fd-logo" src="images/freakday-titre.png" alt="Freak Day">
+        </div>
+        <h1 class="map-title fd-title">Bienvenue à la Foire Noire</h1>
+        <div class="attractions-grid" id="attractionsGrid"></div>
+    </div>
+
+    <!-- PUZZLE PAGE -->
+    <div id="puzzle" class="page">
+        <div class="fd-logo-zone">
+            <img class="site-logo fd-logo" src="images/freakday-titre.png" alt="Freak Day">
+        </div>
+        <button class="back-btn" onclick="goToPage('map')">← Retour à la carte</button>
+        <div class="puzzle-container fd-frame" id="puzzleContent"></div>
+    </div>
+
+    <script>
+        // Données des attractions
+        const attractions = [
+            {
+                id: 'manege',
+                name: 'Le Manège Rouillé',
+                difficulty: '⭐ Facile',
+                puzzleType: 'Décode le message audio (indice: sons répétés)',
+                correctCode: 'ROUILLE2024',
+                videoUrl: '[AJOUTE_VIDEO_1]',
+                audioUrl: '[AJOUTE_AUDIO_1]',
+                description: 'Un manège qui tourne depuis trop longtemps...',
+                hint: 'Le bruit se répète toutes les 3 secondes'
+            },
+            {
+                id: 'miroir',
+                name: 'La Maison Miroir',
+                difficulty: '⭐⭐⭐ Difficile',
+                puzzleType: 'Trouve le code caché dans l\'image (regarde les reflets)',
+                correctCode: 'MIROIR666',
+                videoUrl: '[AJOUTE_VIDEO_2]',
+                audioUrl: '[AJOUTE_AUDIO_2]',
+                description: 'Où t\'es vraiment dedans?',
+                hint: 'Combine les nombres que tu vois dans les miroirs'
+            },
+            {
+                id: 'kiosque',
+                name: 'Le Kiosque Oublié',
+                difficulty: '⭐⭐ Moyen',
+                puzzleType: 'Cherche le code sur ce site (regarde bien la page)',
+                correctCode: 'TICKET42',
+                videoUrl: '[AJOUTE_VIDEO_3]',
+                audioUrl: '[AJOUTE_AUDIO_3]',
+                description: 'Demande un ticket... s\'il reste des places',
+                hint: 'Regarde partout sur cette page, même les endroits cachés'
+            },
+            {
+                id: 'interdite',
+                name: 'L\'Attraction Interdite',
+                difficulty: '⭐⭐ Moyen',
+                puzzleType: 'Anagrame: ROUE NOIRE → ?',
+                correctCode: 'NOIR',
+                videoUrl: '[AJOUTE_VIDEO_4]',
+                audioUrl: '[AJOUTE_AUDIO_4]',
+                description: 'Interdit pour une raison...',
+                hint: 'Les lettres peuvent faire plusieurs mots'
+            },
+            {
+                id: 'baraque',
+                name: 'La Baraque des Horreurs',
+                difficulty: '⭐⭐⭐⭐ Très difficile',
+                puzzleType: 'Combine les codes précédents (regarde le pattern)',
+                correctCode: 'FOIRENOIRE31',
+                videoUrl: '[AJOUTE_VIDEO_5]',
+                audioUrl: '[AJOUTE_AUDIO_5]',
+                description: 'Épreuve finale après les quatre attractions.',
+                hint: 'Tous les codes précédents font partie de la réponse'
+            }
+        ];
+
+        // État
+        let unlockedAttractions = {};
+        let currentPuzzle = null;
+
+        // Charger la progression
+        function loadProgress() {
+            const saved = localStorage.getItem('foireNoire');
+            if (saved) {
+                unlockedAttractions = JSON.parse(saved);
+            }
+        }
+
+        // Sauvegarder la progression
+        function saveProgress() {
+            localStorage.setItem('foireNoire', JSON.stringify(unlockedAttractions));
+        }
+
+        // Naviguer entre pages
+        function goToPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageName).classList.add('active');
+
+            if (pageName === 'map') {
+                renderMap();
+            }
+        }
+
+        // Afficher une attraction
+        function showAttraction(attractionId) {
+            currentPuzzle = attractions.find(a => a.id === attractionId);
+            goToPage('puzzle');
+            renderPuzzle();
+        }
+
+        // Rendu MAP
+        function renderMap() {
+            const grid = document.getElementById('attractionsGrid');
+            grid.innerHTML = '';
+
+            attractions.forEach(attraction => {
+                const unlocked = unlockedAttractions[attraction.id];
+                const card = document.createElement('div');
+                card.className = `attraction-card ${unlocked ? 'unlocked' : ''}`;
+                card.onclick = () => showAttraction(attraction.id);
+
+                card.innerHTML = `
+                    <h2>
+                        ${attraction.name}
+                        <span class="lock-icon">${unlocked ? '🔓' : '🔒'}</span>
+                    </h2>
+                    <p class="difficulty">${attraction.difficulty}</p>
+                    <p class="description">${attraction.description}</p>
+                    ${unlocked ? '<p class="unlocked-badge">✓ Déverrouillé</p>' : ''}
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Rendu PUZZLE
+        function renderPuzzle() {
+            const container = document.getElementById('puzzleContent');
+            const unlocked = unlockedAttractions[currentPuzzle.id];
+
+            let html = `
+                <h1 class="fd-title">${currentPuzzle.name}</h1>
+                <p class="difficulty">${currentPuzzle.difficulty}</p>
+                <div class="enigma-box">
+                    <p><strong>🔍 Énigme:</strong> ${currentPuzzle.puzzleType}</p>
+                </div>
+            `;
+
+            if (!unlocked) {
+                html += `
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="codeInput" 
+                            class="code-input" 
+                            placeholder="Rentre le code..."
+                            onkeypress="if(event.key==='Enter') submitCode()"
+                        >
+                        <button class="submit-btn fd-btn" onclick="submitCode()">Vérifier le code</button>
+                    </div>
+                    <div class="hint-box">
+                        <p>💡 <strong>Indice:</strong> ${currentPuzzle.hint}</p>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="unlocked-content">
+                        <p class="unlocked-badge">✓ DÉVERROUILLÉ</p>
+                        <div class="media-section">
+                            <h3>📹 Vidéo</h3>
+                            <div class="media-placeholder">
+                                ${currentPuzzle.videoUrl}
+                            </div>
+                        </div>
+                        <div class="media-section">
+                            <h3>🎵 Audio</h3>
+                            <div class="media-placeholder">
+                                ${currentPuzzle.audioUrl}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+            if (!unlocked) {
+                document.getElementById('codeInput').focus();
+            }
+        }
+
+        // Vérifier le code
+        function submitCode() {
+            const input = document.getElementById('codeInput');
+            const userCode = input.value.toUpperCase().trim();
+
+            if (userCode === currentPuzzle.correctCode) {
+                window.playAnswerSound('correct');
+                unlockedAttractions[currentPuzzle.id] = true;
+                saveProgress();
+                alert('🎉 Déverrouillé! Bienvenue à la Foire...');
+                renderPuzzle();
+            } else {
+                window.playAnswerSound('wrong');
+                alert('❌ Mauvais code. Regarde mieux...');
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        // Init
+        loadProgress();
+    </script>
+</body>
+</html>
